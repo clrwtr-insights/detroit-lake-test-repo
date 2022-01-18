@@ -9323,7 +9323,7 @@ $("#openBar").hide();
 // Satellite button interactions
 var today = new Date();
 
-var date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+var date = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
 
 $("#date").text("Last update: " + date);
 
