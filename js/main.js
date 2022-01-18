@@ -28,11 +28,7 @@ var mymap = L.map('map', {
   // maxBoundsViscosity: .8,
 });
 
-function lastweek() {
-  var today = new Date();
-  var lastweek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-  return lastweek;
-}
+
 
 mymap.fitBounds(lakeBoundsClosedMini);
 
@@ -215,52 +211,6 @@ hexCyanLayer
       })
     ]
   }));
-
-
-// $('#myOpacityRange').on('input', function (value) {
-//     $('.hexbin-container').css({
-//         opacity: $(this).val() * '.1'
-//     });
-// });
-// Set up events
-// hexLayer.dispatch()
-//   .on('mouseover', function(d, i) {
-//     console.log({
-//       type: 'mouseover',
-//       event: d,
-//       index: i,
-//       context: this
-//     });
-//     setHovered(d);
-//   })
-//   .on('mouseout', function(d, i) {
-//     console.log({
-//       type: 'mouseout',
-//       event: d,
-//       index: i,
-//       context: this
-//     });
-//     setHovered();
-//   })
-//   .on('click', function(d, i) {
-//     console.log({
-//       type: 'click',
-//       event: d,
-//       index: i,
-//       context: this
-//     });
-//     setClicked(d);
-//   });
-//
-// function setHovered(d) {
-//   d3.select('#hovered .count').text((null != d) ? d.length : '');
-// }
-//
-// function setClicked(d) {
-//   d3.select('#clicked .count').text((null != d) ? d.length : '');
-// }
-
-
 
 dateSelect = $('#d0').val();
 let [y, m, d] = dateSelect.split('-');
@@ -464,7 +414,9 @@ Promise.all([
       month = dateReformat[1];
       day = dateReformat[2];
       reformattedDate = month + "/" + day + "/" + year;
+      reformattedDateDonut = month + "/" + day;
       var USTd = new Date(reformattedDate)
+      currentDateDonut = new Date(USTd.getFullYear(), USTd.getMonth(), USTd.getDate());
       nct.push(USTd.setHours(USTd.getHours() + 8));
       bloom_p.push(nowCastData[i].bloom_p);
       bloom_1_p.push(nowCastData[i].bloom_1_p);
@@ -474,7 +426,13 @@ Promise.all([
       } else if (i !== nowCastData.length) {
         nctCurrentDate.push('null')
       }
-      $("#date").text("Last update: " + reformattedDate);
+      var lastweek = new Date(USTd.getFullYear(), USTd.getMonth(), USTd.getDate() - 7);
+      currentDateDonutReformatted = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate();
+      currentDateDonutReformattedUpdate = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate() + "/" + currentDateDonut.getFullYear();
+      lastweekReformatted = lastweek.getMonth()+1 + "/" + lastweek.getDate();
+      $("#date").text("Last update: " + currentDateDonutReformattedUpdate);
+      $("#dateCyan").text(lastweekReformatted + "-" + currentDateDonutReformatted);
+      $("#dateCyan2").text(lastweekReformatted + "-" + currentDateDonutReformatted);
     }
   }
 
@@ -3195,7 +3153,6 @@ Promise.all([
     bindto: "#dchSum-chart"
   });
 
-
   // sample algae chart
   sampleSubChart = c3.generate({
     size: {
@@ -3922,12 +3879,18 @@ Promise.all([
       }
     },
     tooltip: {
-  position: function (data, width, height, element) {
-    return {top: 0, left: 20};
-  }
-},
+      position: function(data, width, height, element) {
+        return {
+          top: 0,
+          left: 20
+        };
+      }
+    },
     color: {
       pattern: ['#17e8ce', '#01a2ff']
+    },
+    legend: {
+        show: false
     },
     donut: {
       title: lastModelAcc + "% Observed Bloom area",
@@ -3953,12 +3916,18 @@ Promise.all([
       }
     },
     tooltip: {
-  position: function (data, width, height, element) {
-    return {top: 0, left: 20};
-  }
-},
+      position: function(data, width, height, element) {
+        return {
+          top: 0,
+          left: 20
+        };
+      }
+    },
     color: {
       pattern: ['#ff7f0e', '#fec44f']
+    },
+    legend: {
+        show: false
     },
     donut: {
       title: lastModelAcc + "% Forecast Accuracy",
@@ -3984,37 +3953,29 @@ Promise.all([
       types: {
         Current: 'bar',
       },
+      // Onclick function for CyAN line chart
       onclick: function(d, i) {
         console.log("onclick", d, i);
         cyanoProb = 100 * parseFloat(d.value);
         cyanoProb_1 = 100 - cyanoProb;
         nctHistoricalDate = ["Historical"];
-        for (let i = 0; i < d.index; i++) {
-          if (i == d.index - 1) {
+        for (let i = 0; i < d.index + 1; i++) {
+          if (i == d.index) {
             nctHistoricalDate.push(parseFloat(d.value))
-          } else if (i !== d.index - 1) {
+          } else if (i !== d.index) {
             nctHistoricalDate.push('null')
           }
         }
-        //           donutChart2.unload({
-        //   ids: ['Probability of a bloom', 'Probability of no bloom']
-        // });
-        // donutChart2.load({
-        //     unload: true,
-        //     columns:[
-        //       ['Probability of a bloom', cyanoProb],
-        //       ['Probability of no bloom', cyanoProb_1],
-        //     ],
-        // });
         $("#donut-chart > svg > g:nth-child(2) > g.c3-chart > g.c3-chart-arcs > text").text(100 * model_accuracy[d.index] + "% Observed Bloom area");
         var USTdDonut = new Date(d.x);
 
         var monthDonut = USTdDonut.getMonth();
         var dayDonut = USTdDonut.getDate();
         var yearDonut = USTdDonut.getFullYear();
-        var dateSelectDonut = monthDonut + 1 + "/" + dayDonut + "/" + yearDonut
-        var lastWeekDonut = lastweek(dateSelectDonut);
-        $("#dateCyan").text(dateSelectDonut);
+        var dateSelectDonut = monthDonut + 1 + "/" + dayDonut;
+        var lastweekDonut = new Date(USTdDonut.getFullYear(), USTdDonut.getMonth(), USTdDonut.getDate() - 7);
+        lastweekDonutReformatted = lastweekDonut.getMonth()+1 + "/" + lastweekDonut.getDate();
+        $("#dateCyan").text(lastweekDonutReformatted + "-" + dateSelectDonut);
         donutChart.load({
           unload: true,
           columns: [
@@ -4052,7 +4013,7 @@ Promise.all([
           format: "%b %d ",
           centered: true,
           fit: true,
-          count: 20
+          count: 20,
         }
       },
       y: {
@@ -4060,16 +4021,14 @@ Promise.all([
           text: 'Average CyAN Risk Index',
           position: 'outer-middle'
         },
-        min: .35,
         padding: {
           bottom: 0
         },
         type: 'linear',
         tick: {
-          format: d3.format(".1%"),
-
+          format: d3.format(".2%"),
           count: 5,
-          // values: [0,5000,10000,15000]
+          // values: [.25,.50,.75,1]
         }
       }
     },
@@ -4134,7 +4093,29 @@ Promise.all([
     mymap.removeLayer(weatherSites);
     // Add selected geo layer for selected year
     mymap.removeLayer(sampleSites);
-    mymap.fitBounds(lakeBoundsClosedMini)
+    mymap.fitBounds(lakeBoundsClosedMini);
+    donutChart.load({
+      unload: true,
+      columns: [
+        [cyan, cyanLast],
+        [nocyan, noCyanLast],
+      ],
+    });
+    donutChart2.load({
+      unload: true,
+      columns: [
+        [cyan, cyanLast],
+        [nocyan, noCyanLast],
+      ],
+    });
+    splineChart.load({
+      unload: true,
+      columns: [
+        nct,
+        bloom_p,
+        nctCurrentDate,
+      ],
+    });
   });
 
   // Stream Gage Year Selection
@@ -9225,6 +9206,43 @@ Promise.all([
   });
 
 
+  $("#sample-tab").on("click", function() {
+    sampleSubChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
+    });
+    sampleChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
+    });
+    toxinChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.t2019, sampleSiteSelect.t2018],
+    });
+    nitrateChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.n2019, sampleSiteSelect.n2018],
+    });
+  });
+
+  $("#weather-tab").on("click", function() {
+    sampleSubChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
+    });
+    sampleChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
+    });
+    toxinChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.t2019, sampleSiteSelect.t2018],
+    });
+    nitrateChart.load({
+      unload: true,
+      columns: [sampleSiteSelect.n2019, sampleSiteSelect.n2018],
+    });
+  });
 
 
 });
@@ -9306,17 +9324,7 @@ $("#sat-button").hide();
 // }
 $("#openBar").hide();
 // Satellite button interactions
-$("#cyanButton").on("click", function() {
-  $("#satDropdown").text("CyAN");
-});
-$("#s2a").on("click", function() {
-  $("#satDropdown").text("Sentinel 2a");
-});
-$(".c3-legend-item-probability-of-bloom").hide();
 
-
-// Leaflet controls
-// Map Scale
 
 
 /////////////////////////
