@@ -430,7 +430,7 @@ Promise.all([
       currentDateDonutReformatted = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate();
       currentDateDonutReformattedUpdate = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate() + "/" + currentDateDonut.getFullYear();
       lastweekReformatted = lastweek.getMonth()+1 + "/" + lastweek.getDate();
-      $("#date").text("Last update: " + currentDateDonutReformattedUpdate);
+
       $("#dateCyan").text(lastweekReformatted + "-" + currentDateDonutReformatted);
       $("#dateCyan2").text(lastweekReformatted + "-" + currentDateDonutReformatted);
     }
@@ -3855,7 +3855,7 @@ Promise.all([
     bindto: "#airTempSum-chart"
   });
 
-
+// CyAN Charts
   var cyan = ['Probability of a bloom'];
   var cyanLast = 100 * parseFloat(bloom_p.slice(-1));
   var noCyanLast = 100 - cyanLast;
@@ -3935,9 +3935,6 @@ Promise.all([
     },
     bindto: "#donut-chart2"
   });
-
-  // currentForecast = getYear(nct.slice(-1));
-
   var splineChart = c3.generate({
     size: {
       height: 220,
@@ -9324,7 +9321,11 @@ $("#sat-button").hide();
 // }
 $("#openBar").hide();
 // Satellite button interactions
+var today = new Date();
 
+var date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+
+$("#date").text("Last update: " + date);
 
 
 /////////////////////////
