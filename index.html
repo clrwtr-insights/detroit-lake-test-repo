@@ -95,7 +95,7 @@
           <!-- Lake Name -->
           <span id="placename" class="m-3">Detroit Lake, Oregon</span>
           <!-- last update -->
-          <span id="date" class=""></span>
+          <span id="date"></span>
           <!-- Tab Data Selection -->
           <div id="deck-1" class="card-deck counts">
             <div class="card">
@@ -139,6 +139,9 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in darkBackground" aria-labelledby="dropdownMenuLink">
                           <center>
+                            <div id="weather2022" class="checkbox">
+                              <label>2022</label>
+                            </div>
                             <div id="weather2021" class="checkbox">
                               <label>2021</label>
                             </div>
@@ -525,7 +528,7 @@
                       <div id="deck-2" class="card-deck counts">
                         <div class="card mt-1">
                           <center>
-                            <p class="mb-0">Historical forcast</p>
+                            <p class="mb-0">Historical forecast</p>
                             <div class="donutRange">
                               <span id="dateCyan" class="">11/19/2021</span>
                             </div>
@@ -546,7 +549,7 @@
                       <div id="deck-2" class="card-deck counts">
                         <div class="card">
                           <center>
-                            <p>Click on chart below to select date <i class="fas fa-arrow-circle-down"></i></p>
+                            <p>Click on line below to select date <i class="fas fa-arrow-circle-down"></i></p>
                           </center>
                           <div id="spline-chart"></div>
                         </div>
@@ -602,34 +605,16 @@
 
           <div id="deck-2" class="counts frontSub">
             <div class="tabInfo d-flex flex-row align-items-center  justify-content-between">
-              <div class="dropdown no-arrow frontSub radioselect">
-                <div><span class="mr-2 text-gray-600 small">Select satellite:</span></div>
-                <div><input class="mr-2 text-gray-600 small" type="radio" name="choice" value="s2a" id="choice-s2a" checked>Sentinel 2a</input></div>
-                <div><input class="mr-2 text-gray-600 small" type="radio" name="choice" value="cyan" id="choice-cyan">CyAN</input></div>
-                <!-- <a class="nav-link dropdown-toggle ml-2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <div><span class="mr-2 text-gray-600 small">Select satellite:</span></div>
-                  <div><span id="satDropdown" class="dropdownTitle">Sentinel 2a</span></div>
-                </a> -->
-                <!-- <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in darkBackground" aria-labelledby="dropdownMenuLink">
-                  <center>
-                    <a class="dropdown-item" id="s2a" value="1">Sentinel 2a</a>
-                    <a class="dropdown-item" id="cyanButton" value="2">CyAN</a>
-                  </center>
-                </div> -->
-              </div>
-              <div class="dropdown no-arrow frontSub radioselect">
-                <div><span class="mr-2 text-gray-600 small">Hexbin variable:</span></div>
-                <div><input class="mr-2 text-gray-600 small" type="radio" name="Hexbin_choice" value="ChloroA" id="chlA" checked>Chlorophyl a</input></div>
 
-                <!-- <a class="nav-link dropdown-toggle ml-2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <div><span class="mr-2 text-gray-600 small">Hexbin variable:</span></div>
-                  <div><span id="hexDropdown" class="dropdownTitle">Chlorophyl a</span></div>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in darkBackground" aria-labelledby="dropdownMenuLink">
-                  <center>
-                    <a class="dropdown-item" id="chlA" value="1">Chlorophyl a</a>
-                  </center>
-                </div> -->
+              <div><span class="mr-2 text-gray-600 radioText">Hexbin variable:</span></div>
+              <!-- <div><input class="mr-2 text-gray-600 small" type="radio" name="choice" value="ChloroA" id="choice-chla" checked>Chlorophyl a</input></div>
+                  <div><input class="mr-2 text-gray-600 small" type="radio" name="choice" value="cyan" id="choice-cyan">CyAN</input></div> -->
+              <div class="form-check form-check-inline">
+                <input class="mr-2 text-gray-600 radioText" type="radio" name="choice" value="ChloroA" id="choice-chla" checked>Chlorophyl a</input>
+              </div>
+              <div class="form-check form-check-inline">
+                <div><input class="mr-2 text-gray-600 radioText" type="radio" name="choice" value="cyan" id="choice-cyan">CyAN</input></div>
+
               </div>
 
             </div>

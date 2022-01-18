@@ -20,12 +20,25 @@ html, body, main {
   color: white;
 }
 
+.radioText {
+  font-size: 1.125rem;
+}
+#sat-tab{
+  font-size: 1.125rem;
+}
+#sat-button{
+  font-size: 1.125rem;
+}
+
 button {
   font-size: small;
 }
 .c3-chart-arcs-title {
     dominant-baseline: middle;
     font-size: 1em;
+}
+.c3-line-probability-of-bloom {
+  stroke-width: 8px !important;
 }
 .donutRange {
   font-size: 12px;
@@ -334,7 +347,7 @@ span {
 }
 
 text {
-  fill: gray
+  fill: white
 }
 
 .tick line {
@@ -389,11 +402,6 @@ text {
     margin-top: 1%;
 }
 
-#agegroup-chart {
-  position: relative;
-  /* top: 30px;
-  left: -20px; */
-}
 
 .c3-axis-y-label {
   font-size: .75rem;
@@ -414,57 +422,6 @@ text {
 
 #footer>div {
   font-size: 13px;
-}
-
-.cases-count {
-  color: #dc3545;
-}
-
-.cases-new-count {
-  color: orange;
-}
-
-/* .suspected-count {
-  color: orange;
-} */
-.neg-count {
-  color: #28a745;
-}
-
-.death-count {
-  color: #5d4f72e8;
-}
-
-.confirmed-new-count {
-  vertical-align: super !important;
-  font-size: 50% !important;
-  color: #dc3545;
-  font-style: italic;
-  font-kerning: normal;
-}
-
-.active-new-count {
-  vertical-align: super !important;
-  font-size: 50% !important;
-  color: orange;
-  font-style: italic;
-  font-kerning: normal;
-}
-
-.death-new-count {
-  vertical-align: super !important;
-  font-size: 50% !important;
-  color: #5d4f72e8;
-  font-style: italic;
-  font-kerning: normal;
-}
-
-.neg-new-count {
-  vertical-align: super !important;
-  font-size: 50% !important;
-  color: #28a745;
-  font-style: italic;
-  font-kerning: normal;
 }
 
 #stateButton {
