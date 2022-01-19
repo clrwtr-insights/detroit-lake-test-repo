@@ -304,34 +304,9 @@ window.onload = function() {
   rangeInput.addEventListener('input', range2date, false);
   // Add listener to set the range input value based on the date
   dateInput.addEventListener('change', date2range, false);
-
 }
 
 var gageID = "14178000";
-
-// const aws = require('aws-sdk');
-// const config = require('./config.json');
-//
-// (async function() {
-//   try{
-//
-//     aws.config.setPromisesDependency();
-//     aws.config.update({
-//       accessKeyId: config.aws.accessKey,
-//       secretAccessKey: config.aws.secretKey,
-//       region: 'us-west-2'
-//     });
-//
-//     const s3 = new aws.S3();
-//     const response = await s3.listObjV2({
-//       Bucket: 'clw-us'
-//     }).promise();
-//
-//   } catch (e) {
-//     console.log('our error', e);
-//   }
-// })();
-
 
 Promise.all([
   d3.csv('assets/stream_gauge_tab/gage.csv'), //datasets[0]
@@ -359,9 +334,9 @@ Promise.all([
   d3.csv('assets/stream_gauge_tab/gage2021.csv'), //datasets[22]
   d3.csv('assets/weather_tab/prism2020.csv'), //datasets[23]
   d3.csv('assets/weather_tab/prism2021.csv'), //datasets[24]
-  d3.csv('assets/stream_gauge_tab/detroit_lake_usgstreamgage_2010_01_01_2021_11_27.csv'), //datasets[25]
+  d3.csv('assets/stream_gage_tab/detroit_lake_usgsStreamgage.csv'), //datasets[25]
   d3.csv('assets/satellite_map/dates.csv'), //datasets[26]
-  d3.csv('assets/weather_tab/detroit_lake_gridmet_2012_01_01_2022_01_10.csv'), //datasets[27]
+  d3.csv('assets/weather_tab/detroit_lake_gridmet.csv'), //datasets[27]
   d3.csv('assets/water_sample_tab/detroit_lake_algae_2016_05_03_2019_10_30.csv'), //datasets[28]
   d3.csv('assets/now_cast_tab/detroit_lake_nowcast_predictions.csv'), //datasets[29]
   d3.csv('assets/cyan_map/detroit_lake_cyan_2021_10_06.csv'), //datasets[30]
@@ -389,12 +364,11 @@ Promise.all([
   })
   hexCyanLayer.data(hexCyanData);
 
-
   // Nowcast data
   nct = ["Date"];
-  bloom_p = ["probability of bloom"];
-  bloom_1_p = ["probability of no bloom"];
-  model_accuracy = ["accuracy of the now-cast model"];
+  bloom_p = ["Probability of bloom"];
+  bloom_1_p = ["Probability of no bloom"];
+  model_accuracy = ["Accuracy of the now-cast model"];
   nctCurrentDate = ["Current"];
 
   var nowCastVars = {
@@ -404,7 +378,6 @@ Promise.all([
     ma: model_accuracy,
     cd: nctCurrentDate,
   }
-
 
   function nowCastCounts(i) {
     let nowCastData = datasets[29];
@@ -505,12 +478,6 @@ Promise.all([
 
   var weatherVars = {
     name: "Precip",
-    p: precip,
-    p2020: precip2020,
-    p2021: precip2021,
-    a: airTemp,
-    a2020: airTemp2020,
-    a2021: airTemp2021,
     pcM2022: weatherData2022pcMean,
     pcS2022: weatherData2022pcSum,
     atempM2022: weatherData2022atempMean,
@@ -558,118 +525,6 @@ Promise.all([
   }
 
   function varsCounts(i) {
-    tp = 0, ta = 0;
-    datasets[5].forEach(function(d) {
-      var USTd = new Date(d["date"])
-      wt.push(USTd.setHours(USTd.getHours() + 8));
-      tp = 0, ta = 0;
-      current = d;
-      delete current["date"];
-      if (i["name"] = "Precip") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            tp += +items[0];
-            break;
-        };
-
-      }
-
-      if (i["name"] = "Air_Temp") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            ta += +items[0];
-            break;
-        };
-
-      }
-      i["p"].push(tp);
-      i["a"].push(ta);
-    });
-    tp2020 = 0, ta2020 = 0;
-    datasets[23].forEach(function(d) {
-      var USTd = new Date(d["date"])
-      wt2020.push(USTd.setHours(USTd.getHours() + 8));
-      tp2020 = 0, ta2020 = 0;
-      current = d;
-      delete current["date"];
-      if (i["name"] = "Precip") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            tp2020 += +items[0];
-            break;
-        };
-
-      }
-
-      if (i["name"] = "Air_Temp") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            ta2020 += +items[0];
-            break;
-        };
-
-      }
-      i["p2020"].push(tp2020);
-      i["a2020"].push(ta2020);
-    });
-    tp2021 = 0, ta2021 = 0;
-    datasets[24].forEach(function(d) {
-      var USTd = new Date(d["date"])
-      wt2021.push(USTd.setHours(USTd.getHours() + 8));
-      tp2021 = 0, ta2021 = 0;
-      current = d;
-      delete current["date"];
-      if (i["name"] = "Precip") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            tp2021 += +items[0];
-            break;
-        };
-
-      }
-
-      if (i["name"] = "Air_Temp") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            ta2021 += +items[0];
-            break;
-        };
-
-      }
-      i["p2021"].push(tp2021);
-      i["a2021"].push(ta2021);
-    });
-
     let weatherData = datasets[27];
 
     for (let i = 0; i < weatherData.length; i++) {
@@ -741,55 +596,17 @@ Promise.all([
           weatherData2013atempSum.push(weatherData[i].Air_Temp_cumsum);
           break;
         case 2012:
+          var USTd = new Date(yearConversion)
+          wt.push(USTd.setHours(USTd.getHours() + 8));
           weatherData2012pcMean.push(weatherData[i].Precip_mean);
           weatherData2012pcSum.push(weatherData[i].Precip_cumsum);
           weatherData2012atempMean.push(weatherData[i].Air_Temp_mean);
           weatherData2012atempSum.push(weatherData[i].Air_Temp_cumsum);
           break;
-          // case 2011:
-          //   weatherData2011pcMean.push(weatherData[i].Precip_mean);
-          //   weatherData2011pcSum.push(weatherData[i].Precip_cumsum);
-          //   weatherData2011atempMean.push(weatherData[i].Air_Temp_mean);
-          //   weatherData2011atempSum.push(weatherData[i].Air_Temp_cumsum);
-          //   break;
-          // case 2010:
-          //   weatherData2010pcMean.push(weatherData[i].Precip_mean);
-          //   weatherData2010pcSum.push(weatherData[i].Precip_cumsum);
-          //   weatherData2010atempMean.push(weatherData[i].Air_Temp_mean);
-          //   weatherData2010atempSum.push(weatherData[i].Air_Temp_cumsum);
-          //   break;
         default:
       }
-
-
     }
   }
-
-
-  // const distinct = (value, index, self) => {
-  //   return self.indexOf(value) === index;
-  // }
-  //       var years = ["Years"];
-  //       datasets[25].forEach(function(d) {
-  //         var yearList = d["year"];
-  //         years.push(yearList);
-  //         var distinctYears = years.filter(distinct);
-  //         for (var i = 0; i < distinctYears.length; i++) {
-  //           distinctYears[i]
-  //         }
-  //       });
-
-
-  // streamData = [];
-
-  // streamGage1Data2021 = datasets[25].filter(function(d) {
-  //
-  //   return d.usgs_site = "14178000";
-  // })
-
-
-
-
 
   // Stream Gage Data
 
@@ -799,6 +616,11 @@ Promise.all([
   var water_temp = ["Water Temperature"];
   var water_temp2020 = ["2020"];
   var water_temp2021 = ["2021"];
+  streamGage1Data2022 = [];
+  streamGage1Data2022wtMean = ["2022"];
+  streamGage1Data2022wtSum = ["2022"];
+  streamGage1Data2022dchMean = ["2022"];
+  streamGage1Data2022dchSum = ["2022"];
   streamGage1Data2021 = [];
   streamGage1Data2021wtMean = ["2021"];
   streamGage1Data2021wtSum = ["2021"];
@@ -865,6 +687,10 @@ Promise.all([
     wt: water_temp,
     wt2020: water_temp2020,
     wt2021: water_temp2021,
+    wtM2022: streamGage1Data2022wtMean,
+    wtS2022: streamGage1Data2022wtSum,
+    dchM2022: streamGage1Data2022dchMean,
+    dchS2022: streamGage1Data2022dchSum,
     wtM2021: streamGage1Data2021wtMean,
     wtS2021: streamGage1Data2021wtSum,
     dchM2021: streamGage1Data2021dchMean,
@@ -921,79 +747,294 @@ Promise.all([
 
     let streamGageData = datasets[25];
     for (let i = 0; i < streamGageData.length; i++) {
+      dateGage1Reformat = streamGageData[i].date.split("-");
+      yearGage1 = dateGage1Reformat[0];
       if (streamGageData[i].usgs_site == "14178000") {
-        switch (streamGageData[i].year) {
+        switch (yearGage1) {
+          case "2022":
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2022wtMean.push("null");
+          } else {
+              streamGage1Data2022wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2022wtSum.push("null");
+          } else {
+              streamGage1Data2022wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2022dchMean.push("null");
+          } else {
+              streamGage1Data2022dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2022dchSum.push("null");
+          } else {
+              streamGage1Data2022dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
+            break;
           case "2021":
-            streamGage1Data2021wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2021wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2021dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2021dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2021wtMean.push("null");
+          } else {
+              streamGage1Data2021wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2021wtSum.push("null");
+          } else {
+              streamGage1Data2021wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2021dchMean.push("null");
+          } else {
+              streamGage1Data2021dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2021dchSum.push("null");
+          } else {
+              streamGage1Data2021dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2020":
-            streamGage1Data2020wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2020wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2020dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2020dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2020wtMean.push("null");
+          } else {
+              streamGage1Data2020wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2020wtSum.push("null");
+          } else {
+              streamGage1Data2020wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2020dchMean.push("null");
+          } else {
+              streamGage1Data2020dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2020dchSum.push("null");
+          } else {
+              streamGage1Data2020dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2019":
-            streamGage1Data2019wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2019wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2019dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2019dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2019wtMean.push("null");
+          } else {
+              streamGage1Data2019wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2019wtSum.push("null");
+          } else {
+              streamGage1Data2019wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2019dchMean.push("null");
+          } else {
+              streamGage1Data2019dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2019dchSum.push("null");
+          } else {
+              streamGage1Data2019dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2018":
-            streamGage1Data2018wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2018wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2018dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2018dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2018wtMean.push("null");
+          } else {
+              streamGage1Data2018wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2018wtSum.push("null");
+          } else {
+              streamGage1Data2018wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2018dchMean.push("null");
+          } else {
+              streamGage1Data2018dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2018dchSum.push("null");
+          } else {
+              streamGage1Data2018dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2017":
-            streamGage1Data2017wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2017wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2017dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2017dchSum.push(streamGageData[i].Discharge_cumsum);
-            break;
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2017wtMean.push("null");
+          } else {
+              streamGage1Data2017wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2017wtSum.push("null");
+          } else {
+              streamGage1Data2017wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2017dchMean.push("null");
+          } else {
+              streamGage1Data2017dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2017dchSum.push("null");
+          } else {
+              streamGage1Data2017dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
           case "2016":
-            streamGage1Data2016wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2016wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2016dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2016dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2016wtMean.push("null");
+          } else {
+              streamGage1Data2016wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2016wtSum.push("null");
+          } else {
+              streamGage1Data2016wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2016dchMean.push("null");
+          } else {
+              streamGage1Data2016dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2016dchSum.push("null");
+          } else {
+              streamGage1Data2016dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2015":
-            streamGage1Data2015wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2015wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2015dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2015dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2015wtMean.push("null");
+          } else {
+              streamGage1Data2015wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2015wtSum.push("null");
+          } else {
+              streamGage1Data2015wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2015dchMean.push("null");
+          } else {
+              streamGage1Data2015dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2015dchSum.push("null");
+          } else {
+              streamGage1Data2015dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2014":
-            streamGage1Data2014wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2014wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2014dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2014dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2014wtMean.push("null");
+          } else {
+              streamGage1Data2014wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2014wtSum.push("null");
+          } else {
+              streamGage1Data2014wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2014dchMean.push("null");
+          } else {
+              streamGage1Data2014dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2014dchSum.push("null");
+          } else {
+              streamGage1Data2014dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2013":
-            streamGage1Data2013wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2013wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2013dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2013dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2013wtMean.push("null");
+          } else {
+              streamGage1Data2013wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2013wtSum.push("null");
+          } else {
+              streamGage1Data2013wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2013dchMean.push("null");
+          } else {
+              streamGage1Data2013dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2013dchSum.push("null");
+          } else {
+              streamGage1Data2013dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2012":
-            streamGage1Data2012wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2012wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2012dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2012dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2012wtMean.push("null");
+          } else {
+              streamGage1Data2012wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2012wtSum.push("null");
+          } else {
+              streamGage1Data2012wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2012dchMean.push("null");
+          } else {
+              streamGage1Data2012dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2012dchSum.push("null");
+          } else {
+              streamGage1Data2012dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2011":
-            streamGage1Data2011wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2011wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2011dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2011dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2011wtMean.push("null");
+          } else {
+              streamGage1Data2011wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2011wtSum.push("null");
+          } else {
+              streamGage1Data2011wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2011dchMean.push("null");
+          } else {
+              streamGage1Data2011dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2011dchSum.push("null");
+          } else {
+              streamGage1Data2011dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           case "2010":
-            streamGage1Data2010wtMean.push(streamGageData[i].Water_Temp_mean);
-            streamGage1Data2010wtSum.push(streamGageData[i].Water_Temp_cumsum);
-            streamGage1Data2010dchMean.push(streamGageData[i].Discharge_mean);
-            streamGage1Data2010dchSum.push(streamGageData[i].Discharge_cumsum);
+          if (streamGageData[i].Water_Temp_mean == "") {
+              streamGage1Data2010wtMean.push("null");
+          } else {
+              streamGage1Data2010wtMean.push(streamGageData[i].Water_Temp_mean);
+          };
+          if (streamGageData[i].Water_Temp_cumsum == "") {
+              streamGage1Data2010wtSum.push("null");
+          } else {
+              streamGage1Data2010wtSum.push(streamGageData[i].Water_Temp_cumsum);
+          };
+          if (streamGageData[i].Discharge_mean == "") {
+              streamGage1Data2010dchMean.push("null");
+          } else {
+              streamGage1Data2010dchMean.push(streamGageData[i].Discharge_mean);
+          };
+          if (streamGageData[i].Discharge_cumsum == "") {
+              streamGage1Data2010dchSum.push("null");
+          } else {
+              streamGage1Data2010dchSum.push(streamGageData[i].Discharge_cumsum);
+          };
             break;
           default:
         }
@@ -1073,216 +1114,316 @@ Promise.all([
 
 
   }
-
-  function siteCounts(i) {
-    let streamGageData = datasets[25];
-
-    for (let t = 0; t < streamGageData.length; t++) {
-      if (streamGageData[t].usgs_site == i["name"]) {
-        switch (streamGageData[t].year) {
-          case "2021":
-            streamGage1Data2021.push(streamGageData[t]);
-            streamGage1Data2021wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2021wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2021dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2021dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2020":
-            streamGage1Data2020.push(streamGageData[t]);
-            streamGage1Data2020wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2020wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2020dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2020dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2019":
-            streamGage1Data2019.push(streamGageData[t]);
-            streamGage1Data2019wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2019wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2019dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2019dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2018":
-            streamGage1Data2018.push(streamGageData[t]);
-            streamGage1Data2018wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2018wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2018dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2018dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2017":
-            streamGage1Data2017.push(streamGageData[t]);
-            streamGage1Data2017wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2017wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2017dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2017dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2016":
-            streamGage1Data2016.push(streamGageData[t]);
-            streamGage1Data2016wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2016wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2016dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2016dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2015":
-            streamGage1Data2015.push(streamGageData[t]);
-            streamGage1Data2015wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2015wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2015dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2015dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2014":
-            streamGage1Data2014.push(streamGageData[t]);
-            streamGage1Data2014wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2014wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2014dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2014dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2013":
-            streamGage1Data2013.push(streamGageData[t]);
-            streamGage1Data2013wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2013wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2013dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2013dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2012":
-            streamGage1Data2012.push(streamGageData[t]);
-            streamGage1Data2012wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2012wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2012dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2012dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2011":
-            streamGage1Data2011.push(streamGageData[t]);
-            streamGage1Data2011wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2011wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2011dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2011dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          case "2010":
-            streamGage1Data2010.push(streamGageData[t]);
-            streamGage1Data2010wtMean.push(streamGageData[t].Water_Temp_mean);
-            streamGage1Data2010wtSum.push(streamGageData[t].Water_Temp_cumsum);
-            streamGage1Data2010dchMean.push(streamGageData[t].Discharge_mean);
-            streamGage1Data2010dchSum.push(streamGageData[t].Discharge_cumsum);
-            break;
-          default:
-        }
+function siteCounts(i) {
+  let streamGageData = datasets[25];
+  for (let t = 0; t < streamGageData.length; t++) {
+    dateGageReformat = streamGageData[t].date.split("-");
+    yearGage = dateGageReformat[0];
+    if (streamGageData[t].usgs_site == i["name"]) {
+      switch (yearGage) {
+        case "2022":
+          streamGage1Data2022.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2022wtMean.push("null");
+          } else {
+              streamGage1Data2022wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2022wtSum.push("null");
+          } else {
+              streamGage1Data2022wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2022dchMean.push("null");
+          } else {
+              streamGage1Data2022dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2022dchSum.push("null");
+          } else {
+              streamGage1Data2022dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2021":
+          streamGage1Data2021.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2021wtMean.push("null");
+          } else {
+              streamGage1Data2021wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2021wtSum.push("null");
+          } else {
+              streamGage1Data2021wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2021dchMean.push("null");
+          } else {
+              streamGage1Data2021dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2021dchSum.push("null");
+          } else {
+              streamGage1Data2021dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2020":
+          streamGage1Data2020.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2020wtMean.push("null");
+          } else {
+              streamGage1Data2020wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2020wtSum.push("null");
+          } else {
+              streamGage1Data2020wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2020dchMean.push("null");
+          } else {
+              streamGage1Data2020dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2020dchSum.push("null");
+          } else {
+              streamGage1Data2020dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2019":
+          streamGage1Data2019.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2019wtMean.push("null");
+          } else {
+              streamGage1Data2019wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2019wtSum.push("null");
+          } else {
+              streamGage1Data2019wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2019dchMean.push("null");
+          } else {
+              streamGage1Data2019dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2019dchSum.push("null");
+          } else {
+              streamGage1Data2019dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2018":
+          streamGage1Data2018.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2018wtMean.push("null");
+          } else {
+              streamGage1Data2018wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2018wtSum.push("null");
+          } else {
+              streamGage1Data2018wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2018dchMean.push("null");
+          } else {
+              streamGage1Data2018dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2018dchSum.push("null");
+          } else {
+              streamGage1Data2018dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2017":
+          streamGage1Data2017.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2017wtMean.push("null");
+          } else {
+              streamGage1Data2017wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2017wtSum.push("null");
+          } else {
+              streamGage1Data2017wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2017dchMean.push("null");
+          } else {
+              streamGage1Data2017dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2017dchSum.push("null");
+          } else {
+              streamGage1Data2017dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2016":
+          streamGage1Data2016.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2016wtMean.push("null");
+          } else {
+              streamGage1Data2016wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2016wtSum.push("null");
+          } else {
+              streamGage1Data2016wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2016dchMean.push("null");
+          } else {
+              streamGage1Data2016dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2016dchSum.push("null");
+          } else {
+              streamGage1Data2016dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2015":
+          streamGage1Data2015.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2015wtMean.push("null");
+          } else {
+              streamGage1Data2015wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2015wtSum.push("null");
+          } else {
+              streamGage1Data2015wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2015dchMean.push("null");
+          } else {
+              streamGage1Data2015dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2015dchSum.push("null");
+          } else {
+              streamGage1Data2015dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2014":
+          streamGage1Data2014.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2014wtMean.push("null");
+          } else {
+              streamGage1Data2014wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2014wtSum.push("null");
+          } else {
+              streamGage1Data2014wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2014dchMean.push("null");
+          } else {
+              streamGage1Data2014dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2014dchSum.push("null");
+          } else {
+              streamGage1Data2014dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2013":
+          streamGage1Data2013.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2013wtMean.push("null");
+          } else {
+              streamGage1Data2013wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2013wtSum.push("null");
+          } else {
+              streamGage1Data2013wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2013dchMean.push("null");
+          } else {
+              streamGage1Data2013dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2013dchSum.push("null");
+          } else {
+              streamGage1Data2013dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2012":
+          streamGage1Data2012.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2012wtMean.push("null");
+          } else {
+              streamGage1Data2012wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2012wtSum.push("null");
+          } else {
+              streamGage1Data2012wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2012dchMean.push("null");
+          } else {
+              streamGage1Data2012dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2012dchSum.push("null");
+          } else {
+              streamGage1Data2012dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2011":
+          streamGage1Data2011.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2011wtMean.push("null");
+          } else {
+              streamGage1Data2011wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2011wtSum.push("null");
+          } else {
+              streamGage1Data2011wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2011dchMean.push("null");
+          } else {
+              streamGage1Data2011dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2011dchSum.push("null");
+          } else {
+              streamGage1Data2011dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        case "2010":
+          streamGage1Data2010.push(streamGageData[t]);
+          if (streamGageData[t].Water_Temp_mean == "") {
+              streamGage1Data2010wtMean.push("null");
+          } else {
+              streamGage1Data2010wtMean.push(streamGageData[t].Water_Temp_mean);
+          };
+          if (streamGageData[t].Water_Temp_cumsum == "") {
+              streamGage1Data2010wtSum.push("null");
+          } else {
+              streamGage1Data2010wtSum.push(streamGageData[t].Water_Temp_cumsum);
+          };
+          if (streamGageData[t].Discharge_mean == "") {
+              streamGage1Data2010dchMean.push("null");
+          } else {
+              streamGage1Data2010dchMean.push(streamGageData[t].Discharge_mean);
+          };
+          if (streamGageData[t].Discharge_cumsum == "") {
+              streamGage1Data2010dchSum.push("null");
+          } else {
+              streamGage1Data2010dchSum.push(streamGageData[t].Discharge_cumsum);
+          };
+          break;
+        default:
       }
     }
-
-
-    twt = 0;
-    datasets[0].forEach(function(d) {
-      var USTd = new Date(d["Date"])
-      t.push(USTd.setHours(USTd.getHours() + 8));
-      twt = 0;
-      current = d;
-      delete current["Date"];
-      if (i["name"] != "14178000") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            twt += +items[0];
-            break;
-        };
-
-      } else {
-
-        Object.values(current).forEach(function(d) {
-          if (d == undefined) {
-            d = "0"
-          };
-          items = d.split("-");
-          switch (items.length) {
-            case 1:
-              twt += +items[0];
-              break;
-          };
-
-        });
-        //
-      }
-      i["wt"].push(twt);
-    });
-    twt2020 = 0;
-    datasets[21].forEach(function(d) {
-      var USTd = new Date(d["Date"])
-      t2020.push(USTd.setHours(USTd.getHours() + 8));
-      twt2020 = 0;
-      current = d;
-      delete current["Date"];
-      if (i["name"] != "14178000") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            twt2020 += +items[0];
-            break;
-        };
-
-      } else {
-
-        Object.values(current).forEach(function(d) {
-          if (d == undefined) {
-            d = "0"
-          };
-          items = d.split("-");
-          switch (items.length) {
-            case 1:
-              twt2020 += +items[0];
-              break;
-          };
-
-        });
-        //
-      }
-      i["wt2020"].push(twt2020);
-    });
-    twt2021 = 0;
-    datasets[22].forEach(function(d) {
-      var USTd = new Date(d["Date"])
-      t2021.push(USTd.setHours(USTd.getHours() + 8));
-      twt2021 = 0;
-      current = d;
-      delete current["Date"];
-      if (i["name"] != "14178000") {
-        d = current[i["name"]];
-        if (d == undefined) {
-          d = "0"
-        };
-        items = d.split("-");
-        switch (items.length) {
-          case 1:
-            twt2021 += +items[0];
-            break;
-        };
-
-      } else {
-
-        Object.values(current).forEach(function(d) {
-          if (d == undefined) {
-            d = "0"
-          };
-          items = d.split("-");
-          switch (items.length) {
-            case 1:
-              twt2021 += +items[0];
-              break;
-          };
-
-        });
-        //
-      }
-      i["wt2021"].push(twt2021);
-    });
-
-
+  }
   }
 
   // Water sample Data
@@ -1344,31 +1485,6 @@ Promise.all([
   }
 
   function sample1Counts(i) {
-    // algae datas
-    // let algaeData = datasets[28];
-    // for (let i = 0; i < algaeData.length; i++) {
-    //   var  sampleDate = new Date(algaeData[i].date);
-    //   year = sampleDate.getFullYear();
-    //   if (i["name"] = "Log Boom") {
-    //     switch (year) {
-    //       case "2019":
-    //         algae2019.push(algaeData[i].Toxin);
-    //         break;
-    //       case "2018":
-    //         algae201.push(weatherData[i].Toxin);
-    //         break;
-    //       case "2017":
-    //         algae2017.push(weatherData[i].Toxin);
-    //         break;
-    //       case "2016":
-    //         algae2016.push(weatherData[i].Toxin);
-    //         break;
-    //       default:
-    //     }
-    //   }
-    // }
-
-
     // algae data
     ta = 0;
     datasets[2].forEach(function(d) {
@@ -2265,35 +2381,8 @@ Promise.all([
     });
   }
 
-  // checkbox js
-
-
-  function setColor(cases) {
-
-    if (cases >= .874) {
-      id = 4;
-    } else if (cases > .795 && cases <= .874) {
-      id = 3;
-    } else if (cases > .742 && cases <= .795) {
-      id = 2;
-    } else if (cases > .655 && cases <= .742) {
-      id = 1;
-    } else if (cases > 0.006 && cases <= 0.655) {
-      id = 0;
-    } else {
-      id = -1;
-      return "#00000000";
-    }
-
-    return colors[id];
-
-  }
-
-
   function style(feature) {
-
     return {
-      fillColor: setColor(feature.properties.Cases),
       fillOpacity: 0.4,
       weight: 1,
       opacity: 1,
@@ -2304,9 +2393,7 @@ Promise.all([
   }
 
   function sampleStyle(feature) {
-
     return {
-      fillColor: setColor(feature.properties.Cases),
       fillOpacity: 0.4,
       weight: 1,
       opacity: 1,
@@ -2317,9 +2404,7 @@ Promise.all([
   }
 
   function weatherStyle(feature) {
-
     return {
-      fillColor: setColor(feature.properties.Cases),
       fillOpacity: 0.4,
       weight: 1,
       opacity: 1,
@@ -2345,7 +2430,6 @@ Promise.all([
   }
 
   // 3.2.2 zoom to the highlighted feature when the mouse is clicking onto it.
-  // 3.2.2 zoom to the highlighted feature when the mouse is clicking onto it.
   function zoomToFeature(e) {
     // mymap.fitBounds(e.target.getBounds());
     L.DomEvent.stopPropagation(e);
@@ -2358,6 +2442,11 @@ Promise.all([
     var water_temp = ["Water Temperature"];
     var water_temp2020 = ["2020"];
     var water_temp2021 = ["2021"];
+    streamGage1Data2022 = [];
+    streamGage1Data2022wtMean = ["2022"];
+    streamGage1Data2022wtSum = ["2022"];
+    streamGage1Data2022dchMean = ["2022"];
+    streamGage1Data2022dchSum = ["2022"];
     streamGage1Data2021 = [];
     streamGage1Data2021wtMean = ["2021"];
     streamGage1Data2021wtSum = ["2021"];
@@ -2425,6 +2514,10 @@ Promise.all([
       wt: water_temp,
       wt2020: water_temp2020,
       wt2021: water_temp2021,
+      wtM2022: streamGage1Data2022wtMean,
+      wtS2022: streamGage1Data2022wtSum,
+      dchM2022: streamGage1Data2022dchMean,
+      dchS2022: streamGage1Data2022dchSum,
       wtM2021: streamGage1Data2021wtMean,
       wtS2021: streamGage1Data2021wtSum,
       dchM2021: streamGage1Data2021dchMean,
@@ -2477,31 +2570,31 @@ Promise.all([
 
     siteCounts(siteSelect);
 
-
     chart.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     chart2.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     h20SumChart.load({
       unload: true,
-      columns: [siteSelect.wtS2020, siteSelect.wtS2021],
+      columns: [siteSelect.wtS2021, siteSelect.wtS2022],
     });
     dchMeanChart.load({
       unload: true,
-      columns: [siteSelect.dchM2020, siteSelect.dchM2021],
+      columns: [siteSelect.dchM2021, siteSelect.dchM2022],
     });
     dchSumChart.load({
       unload: true,
-      columns: [siteSelect.dchS2020, siteSelect.dchS2021],
+      columns: [siteSelect.dchS2021, siteSelect.dchS2022],
     });
     $("#gage-chart > svg > g:nth-child(2)").hide();
     $("#gageDropdown").text(e.target.feature.properties.site_name);
 
     // $("#deck-2 > div.col-lg-2 > center > div:nth-child(4) > label").css('color', 'white');
+    $("#gage2020").css('color', 'white');
     $("#gage2019").css('color', 'white');
     $("#gage2018").css('color', 'white');
     $("#gage2017").css('color', 'white');
@@ -2514,7 +2607,6 @@ Promise.all([
     $("#gage2010").css('color', 'white');
 
   }
-
 
   function sampleZoomToFeature(e) {
     // mymap.fitBounds(e.target.getBounds());
@@ -2620,7 +2712,6 @@ Promise.all([
         direction: 'auto'
       });
   }
-
   // 3.3 add these event the layer obejct.
   function sampleOnEachFeature(feature, layer) {
     layer.on({
@@ -2650,12 +2741,7 @@ Promise.all([
       });
   }
 
-  // var county = new L.GeoJSON(datasets[1], {
-  //   style: style,
-  //   onEachFeature: onEachFeature
-  // }).addTo(mymap);
-  // mymap.fitBounds(county.getBounds());
-
+// Add geojson layers
   var sites = new L.GeoJSON(datasets[1], {
     style: style,
     onEachFeature: onEachFeature,
@@ -2703,72 +2789,16 @@ Promise.all([
     },
   });
 
-
-
-
-  $("#hint").on("click", function() {
-    gage1Counts(gage1);
-    chart.load({
-      unload: true,
-      columns: [t, gage1.wt],
-    });
-    chart2.load({
-      unload: true,
-      columns: [t, gage1.wt],
-    });
-    $("#gage-chart > svg > g:nth-child(2)").hide();
-    $("#hint").text("Click on map to review county trend.");
-
-  });
-
-
-  function onMapClick(e) {
-    $("#hint").click();
-  }
-
-  mymap.on('click', onMapClick);
+// Set intial functions
   gage1Counts(gage1);
   sample1Counts(sampleLoc1);
   varsCounts(weatherVars);
   nowCastCounts(nowCastVars);
+
   chartColor = 'white'
-
-  // function annualUpdate(d) {
-  //   var currentDate = new Date(d.x.toString());
-  //   var currentYear = 2020;
-  //   $("#year").text(d.x);
-  //
-  //   var start = currentYear.toString() + "-01-01";
-  //   var end = currentYear.toString() + "-12-31";
-  //
-  //   var ticks = [];
-  //   start = new Date(start.toString());
-  //   end = new Date(end.toString());
-  //
-  //   s = start.getTime();
-  //   e = end.getTime();
-  //   breaks = 5;
-  //   interval = Math.floor(e - s) / breaks
-  //   ticks = [];
-  //   for (var j = 0; j < breaks; j++) {
-  //     ticks.push(new Date(s + interval * j))
-  //   }
-  //   ticks.push(end);
-  //
-  //   chart.internal.config.axis_x_tick_values = ticks;
-  //   // chart.flush();
-  //
-  //
-  //   chart.zoom([new Date(start.toString()), new Date(end.toString())]);
-  // }
-
+// Padding settings
   var padTop = 10;
   var padRight = 30;
-  // var padSide = 30;
-  // gage chart
-
-
-
   // Stream gage charts
   // stream gage subchart
   chart = c3.generate({
@@ -2778,7 +2808,7 @@ Promise.all([
     data: {
       x: "Date",
       columns: [
-        t, gage1.wtM2021, gage1.wtM2020
+        t, gage1.wtM2022, gage1.wtM2021
       ],
       onclick: function(d, i) {
         console.log("onclick", d, i);
@@ -2845,10 +2875,10 @@ Promise.all([
     bindto: "#gage-chart"
   });
   $("#gage-chart > svg > g:nth-child(2)").hide();
+  var stroke2022 = chart.color('2022');
+  $("#gage2022").css('color', stroke2022);
   var stroke2021 = chart.color('2021');
   $("#gage2021").css('color', stroke2021);
-  var stroke2020 = chart.color('2020');
-  $("#gage2020").css('color', stroke2020);
   // mean water temp
   chart2 = c3.generate({
     size: {
@@ -2856,7 +2886,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [t, gage1.wtM2021, gage1.wtM2020],
+      columns: [t, gage1.wtM2022, gage1.wtM2021],
       // onmouseover: annualUpdate,
       type: 'spline',
       onclick: function(d, i) {
@@ -2886,13 +2916,12 @@ Promise.all([
     axis: {
       x: {
         type: "timeseries",
-        extent: ["04-01-2020", "10-01-2020"],
         tick: {
           format: "%b %d",
           centered: true,
           fit: true,
           count: 20
-        }
+        },
       },
       y: {
         label: {
@@ -2906,7 +2935,6 @@ Promise.all([
         type: 'linear',
         tick: {
           format: d3.format(".2s"),
-
           count: 5,
           // values: [0,5000,10000,15000]
         }
@@ -2951,7 +2979,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [t, gage1.wtS2021, gage1.wtS2020],
+      columns: [t, gage1.wtS2022, gage1.wtS2021],
       type: 'spline',
     },
     // color: {
@@ -3020,7 +3048,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [t, gage1.dchM2021, gage1.dchM2020],
+      columns: [t, gage1.dchM2022, gage1.dchM2021],
       type: 'spline',
     },
     // color: {
@@ -3089,7 +3117,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [wt2020, gage1.dchS2021, gage1.dchS2020],
+      columns: [t, gage1.dchS2022, gage1.dchS2021],
       type: 'spline',
     },
     // color: {
@@ -3197,7 +3225,7 @@ Promise.all([
           centered: true,
           fit: true,
           count: 20
-        }
+        },
       },
       y: {
         label: {
@@ -3481,7 +3509,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [wt2020, weatherVars.pcM2022, weatherVars.pcM2021, weatherVars.pcM2020],
+      columns: [wt, weatherVars.pcM2022, weatherVars.pcM2021],
       type: 'spline',
     },
     // color: {
@@ -3569,10 +3597,10 @@ Promise.all([
     bindto: "#precipSub-chart"
   });
   $("#precipSub-chart > svg > g:nth-child(2)").hide();
-  var stroke2021 = chart.color('2021');
+  var stroke2022 = precipSubChart.color('2022');
+  $("#weather2022").css('color', stroke2022);
+  var stroke2021 = precipSubChart.color('2021');
   $("#weather2021").css('color', stroke2021);
-  var stroke2020 = chart.color('2020');
-  $("#weather2020").css('color', stroke2020);
   // weather chart
   precipChart = c3.generate({
     size: {
@@ -3581,7 +3609,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [wt2020, weatherVars.pcM2022, weatherVars.pcM2021, weatherVars.pcM2020],
+      columns: [wt, weatherVars.pcM2022, weatherVars.pcM2021],
       type: 'spline',
     },
 
@@ -3653,7 +3681,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [wt2020, weatherVars.atempM2022, weatherVars.atempM2021, weatherVars.atempM2020],
+      columns: [wt, weatherVars.atempM2022, weatherVars.atempM2021],
       type: 'spline',
     },
     // color: {
@@ -3722,7 +3750,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [wt2020, weatherVars.pcS2022, weatherVars.pcS2021, weatherVars.pcS2020],
+      columns: [wt, weatherVars.pcS2022, weatherVars.pcS2021],
       type: 'spline',
     },
     // color: {
@@ -3791,7 +3819,7 @@ Promise.all([
     },
     data: {
       x: "Date",
-      columns: [wt2020, weatherVars.atempS2022, weatherVars.atempS2021, weatherVars.atempS2020],
+      columns: [wt, weatherVars.atempS2022, weatherVars.atempS2021],
       type: 'spline',
     },
     // color: {
@@ -4116,133 +4144,97 @@ Promise.all([
   });
 
   // Stream Gage Year Selection
+  $("#clearGage").on("click", function() {
+      chart.load({
+        unload: true,
+      });
+      chart2.load({
+        unload: true,
+      });
+      h20SumChart.load({
+        unload: true,
+      });
+      dchMeanChart.load({
+        unload: true,
+      });
+      dchSumChart.load({
+        unload: true,
+      });
+      $(".gageCheck").css('color', 'white');
+    });
+  $("#gage2022").on("click", function() {
+    color2022 = $("#gage2022").css('color');
+    if (color2022 == 'rgb(255, 255, 255)') {
+      streamGage1Data2022 = [];
+      streamGage1Data2022wtMean = ["2022"];
+      streamGage1Data2022wtSum = ["2022"];
+      streamGage1Data2022dchMean = ["2022"];
+      streamGage1Data2022dchSum = ["2022"];
+
+      var siteSelect = {
+        name: gageID,
+        wtM2022: streamGage1Data2022wtMean,
+        wtS2022: streamGage1Data2022wtSum,
+        dchM2022: streamGage1Data2022dchMean,
+        dchS2022: streamGage1Data2022dchSum,
+      }
+
+      siteCounts(siteSelect);
+
+      chart.load({
+        columns: [siteSelect.wtM2022],
+      });
+      chart2.load({
+        columns: [siteSelect.wtM2022],
+      });
+      h20SumChart.load({
+        columns: [siteSelect.wtS2022],
+      });
+      dchMeanChart.load({
+        columns: [siteSelect.dchM2022],
+      });
+      dchSumChart.load({
+        columns: [siteSelect.dchS2022],
+      });
+      var stroke = chart.color('2022');
+      $("#gage2022").css('color', stroke);
+    } else {
+      chart.unload({
+        ids: ["2022"],
+      });
+      chart2.unload({
+        ids: ["2022"],
+      });
+      h20SumChart.unload({
+        ids: ["2022"],
+      });
+      dchMeanChart.unload({
+        ids: ["2022"],
+      });
+      dchSumChart.unload({
+        ids: ["2022"],
+      });
+      $("#gage2022").css('color', 'white');
+    }
+  });
   $("#gage2021").on("click", function() {
     color2021 = $("#gage2021").css('color');
     if (color2021 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
       streamGage1Data2021 = [];
       streamGage1Data2021wtMean = ["2021"];
       streamGage1Data2021wtSum = ["2021"];
       streamGage1Data2021dchMean = ["2021"];
       streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
         wtM2021: streamGage1Data2021wtMean,
         wtS2021: streamGage1Data2021wtSum,
         dchM2021: streamGage1Data2021dchMean,
         dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2021],
@@ -4261,7 +4253,6 @@ Promise.all([
       });
       var stroke = chart.color('2021');
       $("#gage2021").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2021"],
@@ -4279,139 +4270,26 @@ Promise.all([
         ids: ["2021"],
       });
       $("#gage2021").css('color', 'white');
-
     }
-
   });
-
-
   $("#gage2020").on("click", function() {
     color2020 = $("#gage2020").css('color');
     if (color2020 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
       streamGage1Data2020 = [];
       streamGage1Data2020wtMean = ["2020"];
       streamGage1Data2020wtSum = ["2020"];
       streamGage1Data2020dchMean = ["2020"];
       streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
         wtM2020: streamGage1Data2020wtMean,
         wtS2020: streamGage1Data2020wtSum,
         dchM2020: streamGage1Data2020dchMean,
         dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2020],
@@ -4430,7 +4308,6 @@ Promise.all([
       });
       var stroke = chart.color('2020');
       $("#gage2020").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2020"],
@@ -4448,137 +4325,26 @@ Promise.all([
         ids: ["2020"],
       });
       $("#gage2020").css('color', 'white');
-
     }
-
   });
   $("#gage2019").on("click", function() {
     color2019 = $("#gage2019").css('color');
     if (color2019 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
       streamGage1Data2019 = [];
       streamGage1Data2019wtMean = ["2019"];
       streamGage1Data2019wtSum = ["2019"];
       streamGage1Data2019dchMean = ["2019"];
       streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
         wtM2019: streamGage1Data2019wtMean,
         wtS2019: streamGage1Data2019wtSum,
         dchM2019: streamGage1Data2019dchMean,
         dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2019],
@@ -4597,7 +4363,6 @@ Promise.all([
       });
       var stroke = chart.color('2019');
       $("#gage2019").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2019"],
@@ -4615,133 +4380,23 @@ Promise.all([
         ids: ["2019"],
       });
       $("#gage2019").css('color', 'white');
-
     }
-
   });
   $("#gage2018").on("click", function() {
     color2018 = $("#gage2018").css('color');
     if (color2018 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
       streamGage1Data2018 = [];
       streamGage1Data2018wtMean = ["2018"];
       streamGage1Data2018wtSum = ["2018"];
       streamGage1Data2018dchMean = ["2018"];
       streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
         wtM2018: streamGage1Data2018wtMean,
         wtS2018: streamGage1Data2018wtSum,
         dchM2018: streamGage1Data2018dchMean,
         dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
@@ -4764,7 +4419,6 @@ Promise.all([
       });
       var stroke = chart.color('2018');
       $("#gage2018").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2018"],
@@ -4782,137 +4436,26 @@ Promise.all([
         ids: ["2018"],
       });
       $("#gage2018").css('color', 'white');
-
     }
-
   });
   $("#gage2017").on("click", function() {
     color2017 = $("#gage2017").css('color');
     if (color2017 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
       streamGage1Data2017 = [];
       streamGage1Data2017wtMean = ["2017"];
       streamGage1Data2017wtSum = ["2017"];
       streamGage1Data2017dchMean = ["2017"];
       streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
         wtM2017: streamGage1Data2017wtMean,
         wtS2017: streamGage1Data2017wtSum,
         dchM2017: streamGage1Data2017dchMean,
         dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2017],
@@ -4931,7 +4474,6 @@ Promise.all([
       });
       var stroke = chart.color('2017');
       $("#gage2017").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2017"],
@@ -4949,137 +4491,26 @@ Promise.all([
         ids: ["2017"],
       });
       $("#gage2017").css('color', 'white');
-
     }
-
   });
   $("#gage2016").on("click", function() {
     color2016 = $("#gage2016").css('color');
     if (color2016 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
       streamGage1Data2016 = [];
       streamGage1Data2016wtMean = ["2016"];
       streamGage1Data2016wtSum = ["2016"];
       streamGage1Data2016dchMean = ["2016"];
       streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
         wtM2016: streamGage1Data2016wtMean,
         wtS2016: streamGage1Data2016wtSum,
         dchM2016: streamGage1Data2016dchMean,
         dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2016],
@@ -5098,7 +4529,6 @@ Promise.all([
       });
       var stroke = chart.color('2016');
       $("#gage2016").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2016"],
@@ -5116,137 +4546,26 @@ Promise.all([
         ids: ["2016"],
       });
       $("#gage2016").css('color', 'white');
-
     }
-
   });
   $("#gage2015").on("click", function() {
     color2015 = $("#gage2015").css('color');
     if (color2015 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
       streamGage1Data2015 = [];
       streamGage1Data2015wtMean = ["2015"];
       streamGage1Data2015wtSum = ["2015"];
       streamGage1Data2015dchMean = ["2015"];
       streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
         wtM2015: streamGage1Data2015wtMean,
         wtS2015: streamGage1Data2015wtSum,
         dchM2015: streamGage1Data2015dchMean,
         dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2015],
@@ -5265,7 +4584,6 @@ Promise.all([
       });
       var stroke = chart.color('2015');
       $("#gage2015").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2015"],
@@ -5283,137 +4601,26 @@ Promise.all([
         ids: ["2015"],
       });
       $("#gage2015").css('color', 'white');
-
     }
-
   });
   $("#gage2014").on("click", function() {
     color2014 = $("#gage2014").css('color');
     if (color2014 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
       streamGage1Data2014 = [];
       streamGage1Data2014wtMean = ["2014"];
       streamGage1Data2014wtSum = ["2014"];
       streamGage1Data2014dchMean = ["2014"];
       streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
         wtM2014: streamGage1Data2014wtMean,
         wtS2014: streamGage1Data2014wtSum,
         dchM2014: streamGage1Data2014dchMean,
         dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2014],
@@ -5432,7 +4639,6 @@ Promise.all([
       });
       var stroke = chart.color('2014');
       $("#gage2014").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2014"],
@@ -5450,137 +4656,26 @@ Promise.all([
         ids: ["2014"],
       });
       $("#gage2014").css('color', 'white');
-
     }
-
   });
   $("#gage2013").on("click", function() {
     color2013 = $("#gage2013").css('color');
     if (color2013 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
       streamGage1Data2013 = [];
       streamGage1Data2013wtMean = ["2013"];
       streamGage1Data2013wtSum = ["2013"];
       streamGage1Data2013dchMean = ["2013"];
       streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
         wtM2013: streamGage1Data2013wtMean,
         wtS2013: streamGage1Data2013wtSum,
         dchM2013: streamGage1Data2013dchMean,
         dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2013],
@@ -5599,7 +4694,6 @@ Promise.all([
       });
       var stroke = chart.color('2013');
       $("#gage2013").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2013"],
@@ -5618,135 +4712,25 @@ Promise.all([
       });
       $("#gage2013").css('color', 'white');
     }
-
   });
   $("#gage2012").on("click", function() {
     color2012 = $("#gage2012").css('color');
     if (color2012 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
       streamGage1Data2012 = [];
       streamGage1Data2012wtMean = ["2012"];
       streamGage1Data2012wtSum = ["2012"];
       streamGage1Data2012dchMean = ["2012"];
       streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
         wtM2012: streamGage1Data2012wtMean,
         wtS2012: streamGage1Data2012wtSum,
         dchM2012: streamGage1Data2012dchMean,
         dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2012],
@@ -5765,7 +4749,6 @@ Promise.all([
       });
       var stroke = chart.color('2012');
       $("#gage2012").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2012"],
@@ -5783,137 +4766,26 @@ Promise.all([
         ids: ["2012"],
       });
       $("#gage2012").css('color', 'white');
-
     }
-
   });
   $("#gage2011").on("click", function() {
     color2011 = $("#gage2011").css('color');
     if (color2011 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
       streamGage1Data2011 = [];
       streamGage1Data2011wtMean = ["2011"];
       streamGage1Data2011wtSum = ["2011"];
       streamGage1Data2011dchMean = ["2011"];
       streamGage1Data2011dchSum = ["2011"];
-      streamGage1Data2010 = [];
-      streamGage1Data2010wtMean = ["2010"];
-      streamGage1Data2010wtSum = ["2010"];
-      streamGage1Data2010dchMean = ["2010"];
-      streamGage1Data2010dchSum = ["2010"];
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
         wtM2011: streamGage1Data2011wtMean,
         wtS2011: streamGage1Data2011wtSum,
         dchM2011: streamGage1Data2011dchMean,
         dchS2011: streamGage1Data2011dchSum,
-        wtM2010: streamGage1Data2010wtMean,
-        wtS2010: streamGage1Data2010wtSum,
-        dchM2010: streamGage1Data2010dchMean,
-        dchS2010: streamGage1Data2010dchSum,
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2011],
@@ -5932,7 +4804,6 @@ Promise.all([
       });
       var stroke = chart.color('2011');
       $("#gage2011").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2011"],
@@ -5950,74 +4821,11 @@ Promise.all([
         ids: ["2011"],
       });
       $("#gage2011").css('color', 'white');
-
     }
-
   });
   $("#gage2010").on("click", function() {
     color2010 = $("#gage2010").css('color');
     if (color2010 == 'rgb(255, 255, 255)') {
-      var t = ["Date"];
-      var t2020 = ["Date"];
-      var t2021 = ["Date"];
-      var water_temp = ["Water Temperature"];
-      var water_temp2020 = ["2020"];
-      var water_temp2021 = ["2021"];
-      streamGage1Data2021 = [];
-      streamGage1Data2021wtMean = ["2021"];
-      streamGage1Data2021wtSum = ["2021"];
-      streamGage1Data2021dchMean = ["2021"];
-      streamGage1Data2021dchSum = ["2021"];
-      streamGage1Data2020 = [];
-      streamGage1Data2020wtMean = ["2020"];
-      streamGage1Data2020wtSum = ["2020"];
-      streamGage1Data2020dchMean = ["2020"];
-      streamGage1Data2020dchSum = ["2020"];
-      streamGage1Data2019 = [];
-      streamGage1Data2019wtMean = ["2019"];
-      streamGage1Data2019wtSum = ["2019"];
-      streamGage1Data2019dchMean = ["2019"];
-      streamGage1Data2019dchSum = ["2019"];
-      streamGage1Data2018 = [];
-      streamGage1Data2018wtMean = ["2018"];
-      streamGage1Data2018wtSum = ["2018"];
-      streamGage1Data2018dchMean = ["2018"];
-      streamGage1Data2018dchSum = ["2018"];
-      streamGage1Data2017 = [];
-      streamGage1Data2017wtMean = ["2017"];
-      streamGage1Data2017wtSum = ["2017"];
-      streamGage1Data2017dchMean = ["2017"];
-      streamGage1Data2017dchSum = ["2017"];
-      streamGage1Data2016 = [];
-      streamGage1Data2016wtMean = ["2016"];
-      streamGage1Data2016wtSum = ["2016"];
-      streamGage1Data2016dchMean = ["2016"];
-      streamGage1Data2016dchSum = ["2016"];
-      streamGage1Data2015 = [];
-      streamGage1Data2015wtMean = ["2015"];
-      streamGage1Data2015wtSum = ["2015"];
-      streamGage1Data2015dchMean = ["2015"];
-      streamGage1Data2015dchSum = ["2015"];
-      streamGage1Data2014 = [];
-      streamGage1Data2014wtMean = ["2014"];
-      streamGage1Data2014wtSum = ["2014"];
-      streamGage1Data2014dchMean = ["2014"];
-      streamGage1Data2014dchSum = ["2014"];
-      streamGage1Data2013 = [];
-      streamGage1Data2013wtMean = ["2013"];
-      streamGage1Data2013wtSum = ["2013"];
-      streamGage1Data2013dchMean = ["2013"];
-      streamGage1Data2013dchSum = ["2013"];
-      streamGage1Data2012 = [];
-      streamGage1Data2012wtMean = ["2012"];
-      streamGage1Data2012wtSum = ["2012"];
-      streamGage1Data2012dchMean = ["2012"];
-      streamGage1Data2012dchSum = ["2012"];
-      streamGage1Data2011 = [];
-      streamGage1Data2011wtMean = ["2011"];
-      streamGage1Data2011wtSum = ["2011"];
-      streamGage1Data2011dchMean = ["2011"];
-      streamGage1Data2011dchSum = ["2011"];
       streamGage1Data2010 = [];
       streamGage1Data2010wtMean = ["2010"];
       streamGage1Data2010wtSum = ["2010"];
@@ -6026,53 +4834,6 @@ Promise.all([
 
       var siteSelect = {
         name: gageID,
-        wt: water_temp,
-        wt2020: water_temp2020,
-        wt2021: water_temp2021,
-        wtM2021: streamGage1Data2021wtMean,
-        wtS2021: streamGage1Data2021wtSum,
-        dchM2021: streamGage1Data2021dchMean,
-        dchS2021: streamGage1Data2021dchSum,
-        wtM2020: streamGage1Data2020wtMean,
-        wtS2020: streamGage1Data2020wtSum,
-        dchM2020: streamGage1Data2020dchMean,
-        dchS2020: streamGage1Data2020dchSum,
-        wtM2019: streamGage1Data2019wtMean,
-        wtS2019: streamGage1Data2019wtSum,
-        dchM2019: streamGage1Data2019dchMean,
-        dchS2019: streamGage1Data2019dchSum,
-        wtM2018: streamGage1Data2018wtMean,
-        wtS2018: streamGage1Data2018wtSum,
-        dchM2018: streamGage1Data2018dchMean,
-        dchS2018: streamGage1Data2018dchSum,
-        wtM2017: streamGage1Data2017wtMean,
-        wtS2017: streamGage1Data2017wtSum,
-        dchM2017: streamGage1Data2017dchMean,
-        dchS2017: streamGage1Data2017dchSum,
-        wtM2016: streamGage1Data2016wtMean,
-        wtS2016: streamGage1Data2016wtSum,
-        dchM2016: streamGage1Data2016dchMean,
-        dchS2016: streamGage1Data2016dchSum,
-        wtM2015: streamGage1Data2015wtMean,
-        wtS2015: streamGage1Data2015wtSum,
-        dchM2015: streamGage1Data2015dchMean,
-        dchS2015: streamGage1Data2015dchSum,
-        wtM2014: streamGage1Data2014wtMean,
-        wtS2014: streamGage1Data2014wtSum,
-        dchM2014: streamGage1Data2014dchMean,
-        dchS2014: streamGage1Data2014dchSum,
-        wtM2013: streamGage1Data2013wtMean,
-        wtS2013: streamGage1Data2013wtSum,
-        dchM2013: streamGage1Data2013dchMean,
-        dchS2013: streamGage1Data2013dchSum,
-        wtM2012: streamGage1Data2012wtMean,
-        wtS2012: streamGage1Data2012wtSum,
-        dchM2012: streamGage1Data2012dchMean,
-        dchS2012: streamGage1Data2012dchSum,
-        wtM2011: streamGage1Data2011wtMean,
-        wtS2011: streamGage1Data2011wtSum,
-        dchM2011: streamGage1Data2011dchMean,
-        dchS2011: streamGage1Data2011dchSum,
         wtM2010: streamGage1Data2010wtMean,
         wtS2010: streamGage1Data2010wtSum,
         dchM2010: streamGage1Data2010dchMean,
@@ -6080,7 +4841,6 @@ Promise.all([
       }
 
       siteCounts(siteSelect);
-
 
       chart.load({
         columns: [siteSelect.wtM2010],
@@ -6099,7 +4859,6 @@ Promise.all([
       });
       var stroke = chart.color('2010');
       $("#gage2010").css('color', stroke);
-
     } else {
       chart.unload({
         ids: ["2010"],
@@ -6117,124 +4876,103 @@ Promise.all([
         ids: ["2010"],
       });
       $("#gage2010").css('color', 'white');
-
     }
-
   });
 
   // Weather Year Selection
+  $("#clearWeather").on("click", function() {
+      precipSubChart.load({
+        unload: true,
+      });
+      precipChart.load({
+        unload: true,
+      });
+      aitTempChart.load({
+        unload: true,
+      });
+      dchMeanChart.load({
+        unload: true,
+      });
+      precipSumChart.load({
+        unload: true,
+      });
+      aitTempSumChart.load({
+        unload: true,
+      });
+      $(".weatherCheck").css('color', 'white');
+    });
+  $("#weather2022").on("click", function() {
+    color2022 = $("#weather2022").css('color');
+    if (color2022 == 'rgb(255, 255, 255)') {
+      // Weather Data
+      weatherData2022 = [];
+      weatherData2022pcMean = ["2022"];
+      weatherData2022pcSum = ["2022"];
+      weatherData2022atempMean = ["2022"];
+      weatherData2022atempSum = ["2022"];
+
+      var weatherVars = {
+        name: "Precip",
+        pcM2022: weatherData2022pcMean,
+        pcS2022: weatherData2022pcSum,
+        atempM2022: weatherData2022atempMean,
+        atempS2022: weatherData2022atempSum,
+      }
+
+      varsCounts(weatherVars);
+
+      precipSubChart.load({
+        columns: [weatherVars.pcM2022],
+      });
+      precipChart.load({
+        columns: [weatherVars.pcM2022],
+      });
+      aitTempChart.load({
+        columns: [weatherVars.atempM2022],
+      });
+      precipSumChart.load({
+        columns: [weatherVars.pcS2022],
+      });
+      aitTempSumChart.load({
+        columns: [weatherVars.atempS2022],
+      });
+      var stroke = precipSubChart.color('2022');
+      $("#weather2022").css('color', stroke);
+    } else {
+      precipSubChart.unload({
+        ids: ["2022"],
+      });
+      precipChart.unload({
+        ids: ["2022"],
+      });
+      aitTempChart.unload({
+        ids: ["2022"],
+      });
+      precipSumChart.unload({
+        ids: ["2022"],
+      });
+      aitTempSumChart.unload({
+        ids: ["2022"],
+      });
+      $("#weather2022").css('color', 'white');
+    }
+  });
   $("#weather2021").on("click", function() {
     color2021 = $("#weather2021").css('color');
     if (color2021 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
       weatherData2021 = [];
       weatherData2021pcMean = ["2021"];
       weatherData2021pcSum = ["2021"];
       weatherData2021atempMean = ["2021"];
       weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
         pcM2021: weatherData2021pcMean,
         pcS2021: weatherData2021pcSum,
         atempM2021: weatherData2021atempMean,
         atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
@@ -6283,118 +5021,21 @@ Promise.all([
     color2020 = $("#weather2020").css('color');
     if (color2020 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
       weatherData2020 = [];
       weatherData2020pcMean = ["2020"];
       weatherData2020pcSum = ["2020"];
       weatherData2020atempMean = ["2020"];
       weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
         pcM2020: weatherData2020pcMean,
         pcS2020: weatherData2020pcSum,
         atempM2020: weatherData2020atempMean,
         atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2020],
@@ -6413,7 +5054,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2020');
       $("#weather2020").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2020"],
@@ -6431,126 +5071,27 @@ Promise.all([
         ids: ["2020"],
       });
       $("#weather2020").css('color', 'white');
-
     }
-
   });
   $("#weather2019").on("click", function() {
     color2019 = $("#weather2019").css('color');
     if (color2019 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
       weatherData2019 = [];
       weatherData2019pcMean = ["2019"];
       weatherData2019pcSum = ["2019"];
       weatherData2019atempMean = ["2019"];
       weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
         pcM2019: weatherData2019pcMean,
         pcS2019: weatherData2019pcSum,
         atempM2019: weatherData2019atempMean,
         atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2019],
@@ -6569,7 +5110,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2019');
       $("#weather2019").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2019"],
@@ -6587,126 +5127,27 @@ Promise.all([
         ids: ["2019"],
       });
       $("#weather2019").css('color', 'white');
-
     }
-
   });
   $("#weather2018").on("click", function() {
     color2018 = $("#weather2018").css('color');
     if (color2018 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
       weatherData2018 = [];
       weatherData2018pcMean = ["2018"];
       weatherData2018pcSum = ["2018"];
       weatherData2018atempMean = ["2018"];
       weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
         pcM2018: weatherData2018pcMean,
         pcS2018: weatherData2018pcSum,
         atempM2018: weatherData2018atempMean,
         atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2018],
@@ -6725,7 +5166,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2018');
       $("#weather2018").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2018"],
@@ -6743,126 +5183,27 @@ Promise.all([
         ids: ["2018"],
       });
       $("#weather2018").css('color', 'white');
-
     }
-
   });
   $("#weather2017").on("click", function() {
     color2017 = $("#weather2017").css('color');
     if (color2017 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
       weatherData2017 = [];
       weatherData2017pcMean = ["2017"];
       weatherData2017pcSum = ["2017"];
       weatherData2017atempMean = ["2017"];
       weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
         pcM2017: weatherData2017pcMean,
         pcS2017: weatherData2017pcSum,
         atempM2017: weatherData2017atempMean,
         atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2017],
@@ -6881,7 +5222,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2017');
       $("#weather2017").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2017"],
@@ -6899,126 +5239,27 @@ Promise.all([
         ids: ["2017"],
       });
       $("#weather2017").css('color', 'white');
-
     }
-
   });
   $("#weather2016").on("click", function() {
     color2016 = $("#weather2016").css('color');
     if (color2016 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
       weatherData2016 = [];
       weatherData2016pcMean = ["2016"];
       weatherData2016pcSum = ["2016"];
       weatherData2016atempMean = ["2016"];
       weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
         pcM2016: weatherData2016pcMean,
         pcS2016: weatherData2016pcSum,
         atempM2016: weatherData2016atempMean,
         atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2016],
@@ -7037,7 +5278,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2016');
       $("#weather2016").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2016"],
@@ -7055,126 +5295,27 @@ Promise.all([
         ids: ["2016"],
       });
       $("#weather2016").css('color', 'white');
-
     }
-
   });
   $("#weather2015").on("click", function() {
     color2015 = $("#weather2015").css('color');
     if (color2015 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
       weatherData2015 = [];
       weatherData2015pcMean = ["2015"];
       weatherData2015pcSum = ["2015"];
       weatherData2015atempMean = ["2015"];
       weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
         pcM2015: weatherData2015pcMean,
         pcS2015: weatherData2015pcSum,
         atempM2015: weatherData2015atempMean,
         atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2015],
@@ -7193,7 +5334,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2015');
       $("#weather2015").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2015"],
@@ -7211,126 +5351,27 @@ Promise.all([
         ids: ["2015"],
       });
       $("#weather2015").css('color', 'white');
-
     }
-
   });
   $("#weather2014").on("click", function() {
     color2014 = $("#weather2014").css('color');
     if (color2014 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
       weatherData2014 = [];
       weatherData2014pcMean = ["2014"];
       weatherData2014pcSum = ["2014"];
       weatherData2014atempMean = ["2014"];
       weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
         pcM2014: weatherData2014pcMean,
         pcS2014: weatherData2014pcSum,
         atempM2014: weatherData2014atempMean,
         atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2014],
@@ -7349,7 +5390,6 @@ Promise.all([
       });
       var stroke = precipSubChart.color('2014');
       $("#weather2014").css('color', stroke);
-
     } else {
       precipSubChart.unload({
         ids: ["2014"],
@@ -7367,126 +5407,27 @@ Promise.all([
         ids: ["2014"],
       });
       $("#weather2014").css('color', 'white');
-
     }
-
   });
   $("#weather2013").on("click", function() {
     color2013 = $("#weather2013").css('color');
     if (color2013 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
       weatherData2013 = [];
       weatherData2013pcMean = ["2013"];
       weatherData2013pcSum = ["2013"];
       weatherData2013atempMean = ["2013"];
       weatherData2013atempSum = ["2013"];
-      weatherData2012 = [];
-      weatherData2012pcMean = ["2012"];
-      weatherData2012pcSum = ["2012"];
-      weatherData2012atempMean = ["2012"];
-      weatherData2012atempSum = ["2012"];
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
         pcM2013: weatherData2013pcMean,
         pcS2013: weatherData2013pcSum,
         atempM2013: weatherData2013atempMean,
         atempS2013: weatherData2013atempSum,
-        pcM2012: weatherData2012pcMean,
-        pcS2012: weatherData2012pcSum,
-        atempM2012: weatherData2012atempMean,
-        atempS2012: weatherData2012atempSum,
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2013],
@@ -7523,68 +5464,12 @@ Promise.all([
         ids: ["2013"],
       });
       $("#weather2013").css('color', 'white');
-
     }
-
   });
   $("#weather2012").on("click", function() {
     color2012 = $("#weather2012").css('color');
     if (color2012 == 'rgb(255, 255, 255)') {
       // Weather Data
-      var wt = ["Date"];
-      var wt2020 = ["Date"];
-      var wt2021 = ["Date"];
-      var precip = ["Precipitation"];
-      var precip2020 = ["2020"];
-      var precip2021 = ["2021"];
-      var airTemp = ["Air Temperature"];
-      var airTemp2020 = ["2020"];
-      var airTemp2021 = ["2021"];
-      weatherData2021 = [];
-      weatherData2021pcMean = ["2021"];
-      weatherData2021pcSum = ["2021"];
-      weatherData2021atempMean = ["2021"];
-      weatherData2021atempSum = ["2021"];
-      weatherData2020 = [];
-      weatherData2020pcMean = ["2020"];
-      weatherData2020pcSum = ["2020"];
-      weatherData2020atempMean = ["2020"];
-      weatherData2020atempSum = ["2020"];
-      weatherData2019 = [];
-      weatherData2019pcMean = ["2019"];
-      weatherData2019pcSum = ["2019"];
-      weatherData2019atempMean = ["2019"];
-      weatherData2019atempSum = ["2019"];
-      weatherData2018 = [];
-      weatherData2018pcMean = ["2018"];
-      weatherData2018pcSum = ["2018"];
-      weatherData2018atempMean = ["2018"];
-      weatherData2018atempSum = ["2018"];
-      weatherData2017 = [];
-      weatherData2017pcMean = ["2017"];
-      weatherData2017pcSum = ["2017"];
-      weatherData2017atempMean = ["2017"];
-      weatherData2017atempSum = ["2017"];
-      weatherData2016 = [];
-      weatherData2016pcMean = ["2016"];
-      weatherData2016pcSum = ["2016"];
-      weatherData2016atempMean = ["2016"];
-      weatherData2016atempSum = ["2016"];
-      weatherData2015 = [];
-      weatherData2015pcMean = ["2015"];
-      weatherData2015pcSum = ["2015"];
-      weatherData2015atempMean = ["2015"];
-      weatherData2015atempSum = ["2015"];
-      weatherData2014 = [];
-      weatherData2014pcMean = ["2014"];
-      weatherData2014pcSum = ["2014"];
-      weatherData2014atempMean = ["2014"];
-      weatherData2014atempSum = ["2014"];
-      weatherData2013 = [];
-      weatherData2013pcMean = ["2013"];
-      weatherData2013pcSum = ["2013"];
-      weatherData2013atempMean = ["2013"];
-      weatherData2013atempSum = ["2013"];
       weatherData2012 = [];
       weatherData2012pcMean = ["2012"];
       weatherData2012pcSum = ["2012"];
@@ -7593,48 +5478,6 @@ Promise.all([
 
       var weatherVars = {
         name: "Precip",
-        p: precip,
-        p2020: precip2020,
-        p2021: precip2021,
-        a: airTemp,
-        a2020: airTemp2020,
-        a2021: airTemp2021,
-        pcM2021: weatherData2021pcMean,
-        pcS2021: weatherData2021pcSum,
-        atempM2021: weatherData2021atempMean,
-        atempS2021: weatherData2021atempSum,
-        pcM2020: weatherData2020pcMean,
-        pcS2020: weatherData2020pcSum,
-        atempM2020: weatherData2020atempMean,
-        atempS2020: weatherData2020atempSum,
-        pcM2019: weatherData2019pcMean,
-        pcS2019: weatherData2019pcSum,
-        atempM2019: weatherData2019atempMean,
-        atempS2019: weatherData2019atempSum,
-        pcM2018: weatherData2018pcMean,
-        pcS2018: weatherData2018pcSum,
-        atempM2018: weatherData2018atempMean,
-        atempS2018: weatherData2018atempSum,
-        pcM2017: weatherData2017pcMean,
-        pcS2017: weatherData2017pcSum,
-        atempM2017: weatherData2017atempMean,
-        atempS2017: weatherData2017atempSum,
-        pcM2016: weatherData2016pcMean,
-        pcS2016: weatherData2016pcSum,
-        atempM2016: weatherData2016atempMean,
-        atempS2016: weatherData2016atempSum,
-        pcM2015: weatherData2015pcMean,
-        pcS2015: weatherData2015pcSum,
-        atempM2015: weatherData2015atempMean,
-        atempS2015: weatherData2015atempSum,
-        pcM2014: weatherData2014pcMean,
-        pcS2014: weatherData2014pcSum,
-        atempM2014: weatherData2014atempMean,
-        atempS2014: weatherData2014atempSum,
-        pcM2013: weatherData2013pcMean,
-        pcS2013: weatherData2013pcSum,
-        atempM2013: weatherData2013atempMean,
-        atempS2013: weatherData2013atempSum,
         pcM2012: weatherData2012pcMean,
         pcS2012: weatherData2012pcSum,
         atempM2012: weatherData2012atempMean,
@@ -7642,7 +5485,6 @@ Promise.all([
       }
 
       varsCounts(weatherVars);
-
 
       precipSubChart.load({
         columns: [weatherVars.pcM2012],
@@ -7679,9 +5521,7 @@ Promise.all([
         ids: ["2012"],
       });
       $("#weather2012").css('color', 'white');
-
     }
-
   });
 
   // Sample Year Selection
@@ -8316,6 +6156,7 @@ Promise.all([
 
   });
 
+// SteamGage Site Dropdown Interaction
   $("#14179000").on("click", function() {
     $("#gageDropdown").text("BREITENBUSH R ABV FRENCH CR NR DETROIT, OR");
 
@@ -8325,6 +6166,11 @@ Promise.all([
     var water_temp = ["Water Temperature"];
     var water_temp2020 = ["2020"];
     var water_temp2021 = ["2021"];
+    streamGage1Data2022 = [];
+    streamGage1Data2022wtMean = ["2022"];
+    streamGage1Data2022wtSum = ["2022"];
+    streamGage1Data2022dchMean = ["2022"];
+    streamGage1Data2022dchSum = ["2022"];
     streamGage1Data2021 = [];
     streamGage1Data2021wtMean = ["2021"];
     streamGage1Data2021wtSum = ["2021"];
@@ -8392,6 +6238,10 @@ Promise.all([
       wt: water_temp,
       wt2020: water_temp2020,
       wt2021: water_temp2021,
+      wtM2022: streamGage1Data2022wtMean,
+      wtS2022: streamGage1Data2022wtSum,
+      dchM2022: streamGage1Data2022dchMean,
+      dchS2022: streamGage1Data2022dchSum,
       wtM2021: streamGage1Data2021wtMean,
       wtS2021: streamGage1Data2021wtSum,
       dchM2021: streamGage1Data2021dchMean,
@@ -8467,6 +6317,7 @@ Promise.all([
     });
     $("#gage-chart > svg > g:nth-child(2)").hide();
 
+    $("#gage2020").css('color', 'white');
     $("#gage2019").css('color', 'white');
     $("#gage2018").css('color', 'white');
     $("#gage2017").css('color', 'white');
@@ -8479,7 +6330,6 @@ Promise.all([
     $("#gage2010").css('color', 'white');
     $("#gage-chart > svg > g:nth-child(2)").hide();
   });
-
   $("#14178000").on("click", function() {
     $("#gageDropdown").text("NO SANTIAM R BLW BOULDER CRK, NR DETROIT, OR");
 
@@ -8489,6 +6339,11 @@ Promise.all([
     var water_temp = ["Water Temperature"];
     var water_temp2020 = ["2020"];
     var water_temp2021 = ["2021"];
+    streamGage1Data2022 = [];
+    streamGage1Data2022wtMean = ["2022"];
+    streamGage1Data2022wtSum = ["2022"];
+    streamGage1Data2022dchMean = ["2022"];
+    streamGage1Data2022dchSum = ["2022"];
     streamGage1Data2021 = [];
     streamGage1Data2021wtMean = ["2021"];
     streamGage1Data2021wtSum = ["2021"];
@@ -8556,6 +6411,10 @@ Promise.all([
       wt: water_temp,
       wt2020: water_temp2020,
       wt2021: water_temp2021,
+      wtM2022: streamGage1Data2022wtMean,
+      wtS2022: streamGage1Data2022wtSum,
+      dchM2022: streamGage1Data2022dchMean,
+      dchS2022: streamGage1Data2022dchSum,
       wtM2021: streamGage1Data2021wtMean,
       wtS2021: streamGage1Data2021wtSum,
       dchM2021: streamGage1Data2021dchMean,
@@ -8611,27 +6470,28 @@ Promise.all([
 
     chart.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     chart2.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     h20SumChart.load({
       unload: true,
-      columns: [siteSelect.wtS2020, siteSelect.wtS2021],
+      columns: [siteSelect.wtS2021, siteSelect.wtS2022],
     });
     dchMeanChart.load({
       unload: true,
-      columns: [siteSelect.dchM2020, siteSelect.dchM2021],
+      columns: [siteSelect.dchM2021, siteSelect.dchM2022],
     });
     dchSumChart.load({
       unload: true,
-      columns: [siteSelect.dchS2020, siteSelect.dchS2021],
+      columns: [siteSelect.dchS2021, siteSelect.dchS2022],
     });
     $("#gage-chart > svg > g:nth-child(2)").hide();
 
     // $("#deck-2 > div.col-lg-2 > center > div:nth-child(4) > label").css('color', 'white');
+    $("#gage2020").css('color', 'white');
     $("#gage2019").css('color', 'white');
     $("#gage2018").css('color', 'white');
     $("#gage2017").css('color', 'white');
@@ -8644,7 +6504,6 @@ Promise.all([
     $("#gage2010").css('color', 'white');
     $("#gage-chart > svg > g:nth-child(2)").hide();
   });
-
   $("#14180300").on("click", function() {
     $("#gageDropdown").text("BLOWOUT CREEK NEAR DETROIT, OR");
 
@@ -8654,6 +6513,11 @@ Promise.all([
     var water_temp = ["Water Temperature"];
     var water_temp2020 = ["2020"];
     var water_temp2021 = ["2021"];
+    streamGage1Data2022 = [];
+    streamGage1Data2022wtMean = ["2022"];
+    streamGage1Data2022wtSum = ["2022"];
+    streamGage1Data2022dchMean = ["2022"];
+    streamGage1Data2022dchSum = ["2022"];
     streamGage1Data2021 = [];
     streamGage1Data2021wtMean = ["2021"];
     streamGage1Data2021wtSum = ["2021"];
@@ -8721,6 +6585,10 @@ Promise.all([
       wt: water_temp,
       wt2020: water_temp2020,
       wt2021: water_temp2021,
+      wtM2022: streamGage1Data2022wtMean,
+      wtS2022: streamGage1Data2022wtSum,
+      dchM2022: streamGage1Data2022dchMean,
+      dchS2022: streamGage1Data2022dchSum,
       wtM2021: streamGage1Data2021wtMean,
       wtS2021: streamGage1Data2021wtSum,
       dchM2021: streamGage1Data2021dchMean,
@@ -8776,27 +6644,28 @@ Promise.all([
 
     chart.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     chart2.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     h20SumChart.load({
       unload: true,
-      columns: [siteSelect.wtS2020, siteSelect.wtS2021],
+      columns: [siteSelect.wtS2021, siteSelect.wtS2022],
     });
     dchMeanChart.load({
       unload: true,
-      columns: [siteSelect.dchM2020, siteSelect.dchM2021],
+      columns: [siteSelect.dchM2021, siteSelect.dchM2022],
     });
     dchSumChart.load({
       unload: true,
-      columns: [siteSelect.dchS2020, siteSelect.dchS2021],
+      columns: [siteSelect.dchS2021, siteSelect.dchS2022],
     });
     $("#gage-chart > svg > g:nth-child(2)").hide();
 
     // $("#deck-2 > div.col-lg-2 > center > div:nth-child(4) > label").css('color', 'white');
+    $("#gage2020").css('color', 'white');
     $("#gage2019").css('color', 'white');
     $("#gage2018").css('color', 'white');
     $("#gage2017").css('color', 'white');
@@ -8809,7 +6678,6 @@ Promise.all([
     $("#gage2010").css('color', 'white');
     $("#gage-chart > svg > g:nth-child(2)").hide();
   });
-
   $("#14181500").on("click", function() {
     $("#gageDropdown").text("NORTH SANTIAM RIVER AT NIAGARA, OR");
 
@@ -8819,6 +6687,11 @@ Promise.all([
     var water_temp = ["Water Temperature"];
     var water_temp2020 = ["2020"];
     var water_temp2021 = ["2021"];
+    streamGage1Data2022 = [];
+    streamGage1Data2022wtMean = ["2022"];
+    streamGage1Data2022wtSum = ["2022"];
+    streamGage1Data2022dchMean = ["2022"];
+    streamGage1Data2022dchSum = ["2022"];
     streamGage1Data2021 = [];
     streamGage1Data2021wtMean = ["2021"];
     streamGage1Data2021wtSum = ["2021"];
@@ -8886,6 +6759,10 @@ Promise.all([
       wt: water_temp,
       wt2020: water_temp2020,
       wt2021: water_temp2021,
+      wtM2022: streamGage1Data2022wtMean,
+      wtS2022: streamGage1Data2022wtSum,
+      dchM2022: streamGage1Data2022dchMean,
+      dchS2022: streamGage1Data2022dchSum,
       wtM2021: streamGage1Data2021wtMean,
       wtS2021: streamGage1Data2021wtSum,
       dchM2021: streamGage1Data2021dchMean,
@@ -8941,27 +6818,28 @@ Promise.all([
 
     chart.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     chart2.load({
       unload: true,
-      columns: [siteSelect.wtM2020, siteSelect.wtM2021],
+      columns: [siteSelect.wtM2021, siteSelect.wtM2022],
     });
     h20SumChart.load({
       unload: true,
-      columns: [siteSelect.wtS2020, siteSelect.wtS2021],
+      columns: [siteSelect.wtS2021, siteSelect.wtS2022],
     });
     dchMeanChart.load({
       unload: true,
-      columns: [siteSelect.dchM2020, siteSelect.dchM2021],
+      columns: [siteSelect.dchM2021, siteSelect.dchM2022],
     });
     dchSumChart.load({
       unload: true,
-      columns: [siteSelect.dchS2020, siteSelect.dchS2021],
+      columns: [siteSelect.dchS2021, siteSelect.dchS2022],
     });
     $("#gage-chart > svg > g:nth-child(2)").hide();
 
     // $("#deck-2 > div.col-lg-2 > center > div:nth-child(4) > label").css('color', 'white');
+    $("#gage2020").css('color', 'white');
     $("#gage2019").css('color', 'white');
     $("#gage2018").css('color', 'white');
     $("#gage2017").css('color', 'white');
@@ -8975,6 +6853,7 @@ Promise.all([
     $("#gage-chart > svg > g:nth-child(2)").hide();
   });
 
+// Sample Site Dropdown Interaction
   $("#Log_Boom").on("click", function() {
     $("#sampleDropdown").text("Log Boom");
 
@@ -9049,7 +6928,6 @@ Promise.all([
     $("#sample2017").css('color', 'white');
     $("#sample2016").css('color', 'white');
   });
-
   $("#Heater").on("click", function() {
     $("#sampleDropdown").text("Heater");
 
@@ -9125,7 +7003,6 @@ Promise.all([
     $("#sample2017").css('color', 'white');
     $("#sample2016").css('color', 'white');
   });
-
   $("#Blowout").on("click", function() {
     $("#sampleDropdown").text("Blowout");
 
@@ -9202,46 +7079,6 @@ Promise.all([
     $("#sample2016").css('color', 'white');
   });
 
-
-  $("#sample-tab").on("click", function() {
-    sampleSubChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
-    });
-    sampleChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
-    });
-    toxinChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.t2019, sampleSiteSelect.t2018],
-    });
-    nitrateChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.n2019, sampleSiteSelect.n2018],
-    });
-  });
-
-  $("#weather-tab").on("click", function() {
-    sampleSubChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
-    });
-    sampleChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.a2019, sampleSiteSelect.a2018],
-    });
-    toxinChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.t2019, sampleSiteSelect.t2018],
-    });
-    nitrateChart.load({
-      unload: true,
-      columns: [sampleSiteSelect.n2019, sampleSiteSelect.n2018],
-    });
-  });
-
-
 });
 
 
@@ -9285,28 +7122,21 @@ triggerTabList.forEach(function(triggerEl) {
   })
 })
 
-
-var today = new Date();
-
-var date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
-
-
-
+// Open sidebar
 function openNav() {
-  // $("#info").css("left","0%");
   $("#info").show();
   $("#openBar").hide();
-  // center = L.latLng(44.70744, -126.18925);
   mymap.fitBounds(lakeBoundsClosedMini);
-  // document.getElementById("main").style.marginLeft = "250px";
 }
 
+// Close Sidebar
 function closeNav() {
-  // $("#info").css("left","-50%");
   $("#info").hide();
   $("#openBar").show();
   mymap.fitBounds(lakeBoundsClosed);
 }
+
+// Satellite tab interactions
 $("#sat-tab").on("click", function() {
   $("#infoMapLegend").hide();
   $("#sat-button").show();
@@ -9316,19 +7146,17 @@ $("#sat-button").on("click", function() {
   $("#sat-button").hide();
 });
 $("#sat-button").hide();
-// function closeNav() {
-//   $("#infoContainer").hide();
-// }
 $("#openBar").hide();
-// Satellite button interactions
+
+// Todays Date
 var today = new Date();
-
+// Forat Todays Date
 var date = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
-
+// Update LAst update text with todays date
 $("#date").text("Last update: " + date);
 
 
-/////////////////////////
+///////////////////////// Attribution at bottom ledt of map
 $(".leaflet-control-attribution")
   .css("background-color", "transparent")
   .css("color", "white")
