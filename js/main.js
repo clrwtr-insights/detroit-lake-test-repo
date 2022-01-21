@@ -399,13 +399,13 @@ Promise.all([
       } else if (i !== nowCastData.length) {
         nctCurrentDate.push('null')
       }
-      var lastweek = new Date(USTd.getFullYear(), USTd.getMonth(), USTd.getDate() - 7);
+      var lastweek = new Date(USTd.getFullYear(), USTd.getMonth(), USTd.getDate() + 7);
       currentDateDonutReformatted = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate();
       currentDateDonutReformattedUpdate = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate() + "/" + currentDateDonut.getFullYear();
       lastweekReformatted = lastweek.getMonth()+1 + "/" + lastweek.getDate();
 
-      $("#dateCyan").text(lastweekReformatted + "-" + currentDateDonutReformatted);
-      $("#dateCyan2").text(lastweekReformatted + "-" + currentDateDonutReformatted);
+      $("#dateCyan").text(currentDateDonutReformatted + "-" + lastweekReformatted);
+      $("#dateCyan2").text(currentDateDonutReformatted + "-" + lastweekReformatted);
     }
   }
 
@@ -3998,9 +3998,9 @@ function siteCounts(i) {
         var dayDonut = USTdDonut.getDate();
         var yearDonut = USTdDonut.getFullYear();
         var dateSelectDonut = monthDonut + 1 + "/" + dayDonut;
-        var lastweekDonut = new Date(USTdDonut.getFullYear(), USTdDonut.getMonth(), USTdDonut.getDate() - 7);
+        var lastweekDonut = new Date(USTdDonut.getFullYear(), USTdDonut.getMonth(), USTdDonut.getDate() + 7);
         lastweekDonutReformatted = lastweekDonut.getMonth()+1 + "/" + lastweekDonut.getDate();
-        $("#dateCyan").text(lastweekDonutReformatted + "-" + dateSelectDonut);
+        $("#dateCyan").text(dateSelectDonut + "-" + lastweekDonutReformatted);
         donutChart.load({
           unload: true,
           columns: [
