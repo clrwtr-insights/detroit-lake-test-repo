@@ -340,6 +340,8 @@ Promise.all([
   d3.csv('assets/water_sample_tab/detroit_lake_algae_2016_05_03_2019_10_30.csv'), //datasets[28]
   d3.csv('assets/now_cast_tab/detroit_lake_nowcast_predictions.csv'), //datasets[29]
   d3.csv('assets/cyan_map/detroit_lake_cyan_2021_10_06.csv'), //datasets[30]
+  d3.csv('assets/exp_cyan_tab/detroit_lake_exp_cyan.csv'), //datasets[31]
+  d3.csv('assets/exp_cyan_tab/detroit_lake_exp_cyan_test.csv'), //datasets[32]
 
 ]).then(function(datasets) {
 
@@ -364,9 +366,45 @@ Promise.all([
   })
   hexCyanLayer.data(hexCyanData);
 
+  //  Expected Cyan data
+  dateArray2022 = ["Date"];
+  expCyanDate = ["Date"];
+  logCICells = ["Log_CI_Cells_mL"];
+  expCyanBloom = ["Bloom"];
+  var expCyanVars = {
+    name: "Expected CyAN",
+    lCI: logCICells,
+    ecb: expCyanBloom,
+  }
+
+  function expCyanCounts(i) {
+    let expCyanData = datasets[32];
+    for (let i = 0; i < expCyanData.length; i++) {
+      dateReformat = expCyanData[i].date.split("-");
+      year = dateReformat[0];
+      month = dateReformat[1];
+      day = dateReformat[2];
+      reformattedDate = month + "/" + day + "/" + year;
+      var USTd = new Date(reformattedDate)
+      expCyanDate.push(USTd.setHours(USTd.getHours() + 8));
+      logCICells.push(expCyanData[i].log_CI_cells_mL);
+      expCyanBloom.push(expCyanData[i].bloom);
+    };
+    // let dates2022Data = datasets[32];
+    // for (let i = 0; i < dates2022Data.length; i++) {
+    //   dateReformat = dates2022Data[i].dates.split("/");
+    //   year = dateReformat[2];
+    //   month = dateReformat[0];
+    //   day = dateReformat[1];
+    //   reformattedDate = month + "/" + day + "/" + year;
+    //   var USTd = new Date(reformattedDate)
+    //   dateArray2022.push(USTd.setHours(USTd.getHours() + 8));
+    // };
+  };
+  expCyanCounts(expCyanVars);
   // Nowcast data
   nct = ["Date"];
-  bloom_p = ["Probability of bloom"];
+  bloom_p = ["Probability_of_bloom"];
   bloom_1_p = ["Probability of no bloom"];
   model_accuracy = ["Accuracy of the now-cast model"];
   nctCurrentDate = ["Current"];
@@ -378,6 +416,8 @@ Promise.all([
     ma: model_accuracy,
     cd: nctCurrentDate,
   }
+
+
 
   function nowCastCounts(i) {
     let nowCastData = datasets[29];
@@ -400,14 +440,16 @@ Promise.all([
         nctCurrentDate.push('null')
       }
       var lastweek = new Date(USTd.getFullYear(), USTd.getMonth(), USTd.getDate() + 7);
-      currentDateDonutReformatted = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate();
-      currentDateDonutReformattedUpdate = currentDateDonut.getMonth()+1 + "/" + currentDateDonut.getDate() + "/" + currentDateDonut.getFullYear();
-      lastweekReformatted = lastweek.getMonth()+1 + "/" + lastweek.getDate();
+      currentDateDonutReformatted = currentDateDonut.getMonth() + 1 + "/" + currentDateDonut.getDate();
+      currentDateDonutReformattedUpdate = currentDateDonut.getMonth() + 1 + "/" + currentDateDonut.getDate() + "/" + currentDateDonut.getFullYear();
+      lastweekReformatted = lastweek.getMonth() + 1 + "/" + lastweek.getDate();
 
       $("#dateCyan").text(currentDateDonutReformatted + "-" + lastweekReformatted);
       $("#dateCyan2").text(currentDateDonutReformatted + "-" + lastweekReformatted);
     }
   }
+
+
 
   // Weather Data
   var wt = ["Date"];
@@ -752,289 +794,289 @@ Promise.all([
       if (streamGageData[i].usgs_site == "14178000") {
         switch (yearGage1) {
           case "2022":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2022wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2022wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2022wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2022wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2022dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2022dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2022dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2022dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2021":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2021wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2021wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2021wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2021wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2021dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2021dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2021dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2021dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2020":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2020wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2020wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2020wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2020wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2020dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2020dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2020dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2020dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2019":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2019wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2019wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2019wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2019wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2019dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2019dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2019dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2019dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2018":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2018wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2018wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2018wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2018wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2018dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2018dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2018dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2018dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2017":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2017wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2017wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2017wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2017wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2017dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2017dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2017dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2017dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
           case "2016":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2016wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2016wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2016wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2016wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2016dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2016dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2016dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2016dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2015":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2015wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2015wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2015wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2015wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2015dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2015dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2015dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2015dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2014":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2014wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2014wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2014wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2014wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2014dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2014dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2014dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2014dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2013":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2013wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2013wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2013wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2013wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2013dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2013dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2013dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2013dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2012":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2012wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2012wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2012wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2012wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2012dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2012dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2012dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2012dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2011":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2011wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2011wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2011wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2011wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2011dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2011dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2011dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2011dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           case "2010":
-          if (streamGageData[i].Water_Temp_mean == "") {
+            if (streamGageData[i].Water_Temp_mean == "") {
               streamGage1Data2010wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2010wtMean.push(streamGageData[i].Water_Temp_mean);
-          };
-          if (streamGageData[i].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[i].Water_Temp_cumsum == "") {
               streamGage1Data2010wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2010wtSum.push(streamGageData[i].Water_Temp_cumsum);
-          };
-          if (streamGageData[i].Discharge_mean == "") {
+            };
+            if (streamGageData[i].Discharge_mean == "") {
               streamGage1Data2010dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2010dchMean.push(streamGageData[i].Discharge_mean);
-          };
-          if (streamGageData[i].Discharge_cumsum == "") {
+            };
+            if (streamGageData[i].Discharge_cumsum == "") {
               streamGage1Data2010dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2010dchSum.push(streamGageData[i].Discharge_cumsum);
-          };
+            };
             break;
           default:
         }
@@ -1114,316 +1156,317 @@ Promise.all([
 
 
   }
-function siteCounts(i) {
-  let streamGageData = datasets[25];
-  for (let t = 0; t < streamGageData.length; t++) {
-    dateGageReformat = streamGageData[t].date.split("-");
-    yearGage = dateGageReformat[0];
-    if (streamGageData[t].usgs_site == i["name"]) {
-      switch (yearGage) {
-        case "2022":
-          streamGage1Data2022.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+
+  function siteCounts(i) {
+    let streamGageData = datasets[25];
+    for (let t = 0; t < streamGageData.length; t++) {
+      dateGageReformat = streamGageData[t].date.split("-");
+      yearGage = dateGageReformat[0];
+      if (streamGageData[t].usgs_site == i["name"]) {
+        switch (yearGage) {
+          case "2022":
+            streamGage1Data2022.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2022wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2022wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2022wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2022wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2022dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2022dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2022dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2022dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2021":
-          streamGage1Data2021.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2021":
+            streamGage1Data2021.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2021wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2021wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2021wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2021wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2021dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2021dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2021dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2021dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2020":
-          streamGage1Data2020.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2020":
+            streamGage1Data2020.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2020wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2020wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2020wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2020wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2020dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2020dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2020dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2020dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2019":
-          streamGage1Data2019.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2019":
+            streamGage1Data2019.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2019wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2019wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2019wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2019wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2019dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2019dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2019dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2019dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2018":
-          streamGage1Data2018.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2018":
+            streamGage1Data2018.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2018wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2018wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2018wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2018wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2018dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2018dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2018dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2018dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2017":
-          streamGage1Data2017.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2017":
+            streamGage1Data2017.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2017wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2017wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2017wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2017wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2017dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2017dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2017dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2017dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2016":
-          streamGage1Data2016.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2016":
+            streamGage1Data2016.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2016wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2016wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2016wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2016wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2016dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2016dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2016dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2016dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2015":
-          streamGage1Data2015.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2015":
+            streamGage1Data2015.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2015wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2015wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2015wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2015wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2015dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2015dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2015dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2015dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2014":
-          streamGage1Data2014.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2014":
+            streamGage1Data2014.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2014wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2014wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2014wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2014wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2014dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2014dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2014dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2014dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2013":
-          streamGage1Data2013.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2013":
+            streamGage1Data2013.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2013wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2013wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2013wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2013wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2013dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2013dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2013dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2013dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2012":
-          streamGage1Data2012.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2012":
+            streamGage1Data2012.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2012wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2012wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2012wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2012wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2012dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2012dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2012dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2012dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2011":
-          streamGage1Data2011.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2011":
+            streamGage1Data2011.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2011wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2011wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2011wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2011wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2011dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2011dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2011dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2011dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        case "2010":
-          streamGage1Data2010.push(streamGageData[t]);
-          if (streamGageData[t].Water_Temp_mean == "") {
+            };
+            break;
+          case "2010":
+            streamGage1Data2010.push(streamGageData[t]);
+            if (streamGageData[t].Water_Temp_mean == "") {
               streamGage1Data2010wtMean.push("null");
-          } else {
+            } else {
               streamGage1Data2010wtMean.push(streamGageData[t].Water_Temp_mean);
-          };
-          if (streamGageData[t].Water_Temp_cumsum == "") {
+            };
+            if (streamGageData[t].Water_Temp_cumsum == "") {
               streamGage1Data2010wtSum.push("null");
-          } else {
+            } else {
               streamGage1Data2010wtSum.push(streamGageData[t].Water_Temp_cumsum);
-          };
-          if (streamGageData[t].Discharge_mean == "") {
+            };
+            if (streamGageData[t].Discharge_mean == "") {
               streamGage1Data2010dchMean.push("null");
-          } else {
+            } else {
               streamGage1Data2010dchMean.push(streamGageData[t].Discharge_mean);
-          };
-          if (streamGageData[t].Discharge_cumsum == "") {
+            };
+            if (streamGageData[t].Discharge_cumsum == "") {
               streamGage1Data2010dchSum.push("null");
-          } else {
+            } else {
               streamGage1Data2010dchSum.push(streamGageData[t].Discharge_cumsum);
-          };
-          break;
-        default:
+            };
+            break;
+          default:
+        }
       }
     }
-  }
   }
 
   // Water sample Data
@@ -2741,7 +2784,7 @@ function siteCounts(i) {
       });
   }
 
-// Add geojson layers
+  // Add geojson layers
   var sites = new L.GeoJSON(datasets[1], {
     style: style,
     onEachFeature: onEachFeature,
@@ -2789,14 +2832,14 @@ function siteCounts(i) {
     },
   });
 
-// Set intial functions
+  // Set intial functions
   gage1Counts(gage1);
   sample1Counts(sampleLoc1);
   varsCounts(weatherVars);
   nowCastCounts(nowCastVars);
 
   chartColor = 'white'
-// Padding settings
+  // Padding settings
   var padTop = 10;
   var padRight = 30;
   // Stream gage charts
@@ -3883,7 +3926,7 @@ function siteCounts(i) {
     bindto: "#airTempSum-chart"
   });
 
-// CyAN Charts
+  // CyAN Charts
   var cyan = ['Probability of a bloom'];
   var cyanLast = 100 * parseFloat(bloom_p.slice(-1));
   var noCyanLast = 100 - cyanLast;
@@ -3918,7 +3961,7 @@ function siteCounts(i) {
       pattern: ['#17e8ce', '#01a2ff']
     },
     legend: {
-        show: false
+      show: false
     },
     donut: {
       title: lastModelAcc + "% Observed Bloom area",
@@ -3955,7 +3998,7 @@ function siteCounts(i) {
       pattern: ['#ff7f0e', '#fec44f']
     },
     legend: {
-        show: false
+      show: false
     },
     donut: {
       title: lastModelAcc + "% Forecast Accuracy",
@@ -3963,6 +4006,7 @@ function siteCounts(i) {
     },
     bindto: "#donut-chart2"
   });
+
   var splineChart = c3.generate({
     size: {
       height: 220,
@@ -3970,57 +4014,75 @@ function siteCounts(i) {
     data: {
       x: "Date",
       columns: [
-        nct,
+        expCyanDate,
         bloom_p,
         nctCurrentDate,
+        logCICells,
       ],
+      axes: {
+        Probability_of_bloom: 'y',
+        Log_CI_Cells_mL: 'y2'
+      },
+      names: {
+        Probability_of_bloom: 'Probability of bloom',
+        Log_CI_Cells_mL: 'Log CI Cells (mL)'
+      },
       type: 'spline',
       types: {
         Current: 'bar',
       },
+      bar: {
+        width: 5 // this makes bar width 100px
+      },
+      colors: {
+        Log_CI_Cells_mL: '#de2d26',
+      },
+
       // Onclick function for CyAN line chart
       onclick: function(d, i) {
         console.log("onclick", d, i);
-        cyanoProb = 100 * parseFloat(d.value);
-        cyanoProb_1 = 100 - cyanoProb;
-        nctHistoricalDate = ["Historical"];
-        for (let i = 0; i < d.index + 1; i++) {
-          if (i == d.index) {
-            nctHistoricalDate.push(parseFloat(d.value))
-          } else if (i !== d.index) {
-            nctHistoricalDate.push('null')
+        if (d.id == 'Probability_of_bloom') {
+          cyanoProb = 100 * parseFloat(d.value);
+          cyanoProb_1 = 100 - cyanoProb;
+          nctHistoricalDate = ["Historical"];
+          for (let i = 0; i < d.index + 1; i++) {
+            if (i == d.index) {
+              nctHistoricalDate.push(parseFloat(d.value))
+            } else if (i !== d.index) {
+              nctHistoricalDate.push('null')
+            }
           }
-        }
-        $("#donut-chart > svg > g:nth-child(2) > g.c3-chart > g.c3-chart-arcs > text").text(100 * model_accuracy[d.index] + "% Observed Bloom area");
-        var USTdDonut = new Date(d.x);
+          $("#donut-chart > svg > g:nth-child(2) > g.c3-chart > g.c3-chart-arcs > text").text(100 * model_accuracy[d.index] + "% Observed Bloom area");
+          var USTdDonut = new Date(d.x);
 
-        var monthDonut = USTdDonut.getMonth();
-        var dayDonut = USTdDonut.getDate();
-        var yearDonut = USTdDonut.getFullYear();
-        var dateSelectDonut = monthDonut + 1 + "/" + dayDonut;
-        var lastweekDonut = new Date(USTdDonut.getFullYear(), USTdDonut.getMonth(), USTdDonut.getDate() + 7);
-        lastweekDonutReformatted = lastweekDonut.getMonth()+1 + "/" + lastweekDonut.getDate();
-        $("#dateCyan").text(dateSelectDonut + "-" + lastweekDonutReformatted);
-        donutChart.load({
-          unload: true,
-          columns: [
-            ['Probability of a bloom', cyanoProb],
-            ['Probability of no bloom', cyanoProb_1],
-          ],
-        });
-        splineChart.load({
-          unload: nctHistoricalDate,
-          columns: [
-            nctHistoricalDate,
-          ],
-          type: 'spline',
-          types: {
-            Historical: 'bar',
-          },
-          colors: {
+          var monthDonut = USTdDonut.getMonth();
+          var dayDonut = USTdDonut.getDate();
+          var yearDonut = USTdDonut.getFullYear();
+          var dateSelectDonut = monthDonut + 1 + "/" + dayDonut;
+          var lastweekDonut = new Date(USTdDonut.getFullYear(), USTdDonut.getMonth(), USTdDonut.getDate() + 7);
+          lastweekDonutReformatted = lastweekDonut.getMonth() + 1 + "/" + lastweekDonut.getDate();
+          $("#dateCyan").text(dateSelectDonut + "-" + lastweekDonutReformatted);
+          donutChart.load({
+            unload: true,
+            columns: [
+              ['Probability of a bloom', cyanoProb],
+              ['Probability of no bloom', cyanoProb_1],
+            ],
+          });
+          splineChart.load({
+            unload: nctHistoricalDate,
+            columns: [
+              nctHistoricalDate,
+            ],
+            type: 'spline',
+            types: {
+              Historical: 'bar',
+            },
+            colors: {
               Historical: '#17e8ce',
-          },
-        });
+            },
+          });
+        };
       },
     },
     // color: {
@@ -4028,8 +4090,7 @@ function siteCounts(i) {
     // },
     padding: {
       top: padTop,
-      right: padRight,
-      // left: 0,
+      right: 75,
     },
     axis: {
       x: {
@@ -4054,8 +4115,22 @@ function siteCounts(i) {
           format: d3.format(".2%"),
           count: 5,
           // values: [.25,.50,.75,1]
-        }
-      }
+        },
+        // max: 1,
+        // min: 0,
+      },
+      y2: {
+        show: true,
+        label: {
+          text: 'Log CI Cells (mL)',
+          position: 'outer-middle'
+        },
+        tick: {
+          format: d3.format(".3"),
+          count: 5,
+          // values: [.25,.50,.75,1]
+        },
+      },
     },
     point: {
       r: 0,
@@ -4065,17 +4140,23 @@ function siteCounts(i) {
         }
       }
     },
-    // zoom: {
-    //   enabled: {
-    //     type: "drag"
-    //   },
-    // },
+    zoom: {
+      enabled: {
+        type: "drag"
+      },
+    },
     tooltip: {
       linked: true,
     },
+    // subchart: {
+    //   show: true,
+    //   size: {
+    //     height: 15
+    //   },
+    // },
     legend: {
       show: true,
-      hide: bloom_p,
+      hide: [bloom_p, logCICells],
     },
     line: {
       connectNull: true
@@ -4136,32 +4217,33 @@ function siteCounts(i) {
     splineChart.load({
       unload: true,
       columns: [
-        nct,
+        expCyanDate,
         bloom_p,
         nctCurrentDate,
+        logCICells,
       ],
     });
   });
 
   // Stream Gage Year Selection
   $("#clearGage").on("click", function() {
-      chart.load({
-        unload: true,
-      });
-      chart2.load({
-        unload: true,
-      });
-      h20SumChart.load({
-        unload: true,
-      });
-      dchMeanChart.load({
-        unload: true,
-      });
-      dchSumChart.load({
-        unload: true,
-      });
-      $(".gageCheck").css('color', 'white');
+    chart.load({
+      unload: true,
     });
+    chart2.load({
+      unload: true,
+    });
+    h20SumChart.load({
+      unload: true,
+    });
+    dchMeanChart.load({
+      unload: true,
+    });
+    dchSumChart.load({
+      unload: true,
+    });
+    $(".gageCheck").css('color', 'white');
+  });
   $("#gage2022").on("click", function() {
     color2022 = $("#gage2022").css('color');
     if (color2022 == 'rgb(255, 255, 255)') {
@@ -4881,26 +4963,26 @@ function siteCounts(i) {
 
   // Weather Year Selection
   $("#clearWeather").on("click", function() {
-      precipSubChart.load({
-        unload: true,
-      });
-      precipChart.load({
-        unload: true,
-      });
-      aitTempChart.load({
-        unload: true,
-      });
-      dchMeanChart.load({
-        unload: true,
-      });
-      precipSumChart.load({
-        unload: true,
-      });
-      aitTempSumChart.load({
-        unload: true,
-      });
-      $(".weatherCheck").css('color', 'white');
+    precipSubChart.load({
+      unload: true,
     });
+    precipChart.load({
+      unload: true,
+    });
+    aitTempChart.load({
+      unload: true,
+    });
+    dchMeanChart.load({
+      unload: true,
+    });
+    precipSumChart.load({
+      unload: true,
+    });
+    aitTempSumChart.load({
+      unload: true,
+    });
+    $(".weatherCheck").css('color', 'white');
+  });
   $("#weather2022").on("click", function() {
     color2022 = $("#weather2022").css('color');
     if (color2022 == 'rgb(255, 255, 255)') {
@@ -6156,7 +6238,7 @@ function siteCounts(i) {
 
   });
 
-// SteamGage Site Dropdown Interaction
+  // SteamGage Site Dropdown Interaction
   $("#14179000").on("click", function() {
     $("#gageDropdown").text("BREITENBUSH R ABV FRENCH CR NR DETROIT, OR");
 
@@ -6853,7 +6935,7 @@ function siteCounts(i) {
     $("#gage-chart > svg > g:nth-child(2)").hide();
   });
 
-// Sample Site Dropdown Interaction
+  // Sample Site Dropdown Interaction
   $("#Log_Boom").on("click", function() {
     $("#sampleDropdown").text("Log Boom");
 
@@ -7079,6 +7161,14 @@ function siteCounts(i) {
     $("#sample2016").css('color', 'white');
   });
 
+  $("#CHARadio").on("click", function() {
+    mymap.removeLayer(hexCyanLayer);
+    mymap.addLayer(hexLayer);
+  });
+  $("#CYANRadio").on("click", function() {
+    mymap.removeLayer(hexLayer);
+    // mymap.addLayer(hexCyanLayer);
+  });
 });
 
 

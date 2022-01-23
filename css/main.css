@@ -37,8 +37,8 @@ button {
     dominant-baseline: middle;
     font-size: 1em;
 }
-.c3-line-Probability-of-bloom {
-  stroke-width: 8px !important;
+#deck-3 .c3-chart-lines {
+  stroke-width: 5px !important;
 }
 .donutRange {
   font-size: 12px;
@@ -112,8 +112,8 @@ div#footer>div {
   stroke: transparent;
 }
 
-.c3-line {
-  stroke-width: 1px;
+#spline-chart .c3-line {
+  stroke-width: 5px;
 }
 
 #info {
