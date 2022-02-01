@@ -4114,10 +4114,10 @@ Promise.all([
         tick: {
           format: d3.format(".2%"),
           count: 5,
-          // values: [.25,.50,.75,1]
+          values: [.25,.50,.75,1]
         },
-        // max: 1,
-        // min: 0,
+        max: 1,
+        min: 0,
       },
       y2: {
         show: true,
